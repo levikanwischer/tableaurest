@@ -139,7 +139,7 @@ class Response(object):
     def validate_response_json(self):
         """Validate request response is of 'Content-Type' JSON."""
         if not self.request.text:
-            logging.debug('Body of request was empty. (no-content)')
+            logging.debug(f'Body of request was empty. (method={self.method})')
 
         elif 'Content-Type' not in self.request.headers:
             raise TableauSystemExit(f'Content-Type not found in request.headers {self.request.headers}')
