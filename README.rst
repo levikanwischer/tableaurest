@@ -1,4 +1,4 @@
-*Warning: This repo is still in a pre-v1 development phase. Breaking changes are likely to occur without warning.*
+*Warning: This package is still in a pre-v1 development phase. Breaking changes are likely to occur without warning.*
 
 
 tableaurest
@@ -17,7 +17,7 @@ Installation
 
 Issues
 ------
-If you encounter any issues, please first search existing 'Issues' on GitHUb. If none match your issue, please create a new 'Issue' accordingly to initialize discussion. Thanks.
+If you encounter any issues, please first search existing 'Issues' on GitHub. If none match your issue, please create a new 'Issue' accordingly to initialize discussion. Thanks.
 
 
 Examples
@@ -36,9 +36,7 @@ Print Count of Workbooks Owned by Login User
         >>> with tableaurest.TableauREST() as restapi:
         >>>     workbooks = restapi.queryWorkbooksforUser(owner=True)
         >>>
-        >>>
-        >>> workbooknum = len(workbooks.keys())
-        >>> print(f'{USERNAME} owns {workbooknum} workbooks on {SERVER}.')
+        >>> print(f'{USERNAME} owns {len(workbooks.keys())} workbooks on {SERVER}.')
         'Jane owns 12 workbooks on https://tableau.fakecompany.com.'
 
 
