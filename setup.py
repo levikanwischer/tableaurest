@@ -65,6 +65,7 @@ setuptools.setup(
     license=extract_package_metadata('license'),
 
     author=extract_package_metadata('author'),
+    author_email=extract_package_metadata('email'),
 
     maintainer=extract_package_metadata('maintainer'),
     maintainer_email=extract_package_metadata('email'),
@@ -101,7 +102,7 @@ setuptools.setup(
     entry_points={
         'console_scripts': [
             '%s = %s.cli:main' % (NAME, NAME),
-        ]
+        ],
     },
 
     classifiers=[
