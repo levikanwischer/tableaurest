@@ -154,8 +154,9 @@ class Response(object):
         result = 'Succeeded' if self.ok else 'Failed'
         logging.debug(f'Tableau REST API: {self.method} {result} (statuscode={self.statuscode})')
 
-        _error = {'error': '???', 'summary': 'Unknown error occurred.'}
-        error = self.body['error'] if 'error' in self.keys else _error
+        error = {'error': '???', 'summary': 'Unknown error occurred.'}
+        if 'error' in self.keys:
+            error.update(self.body['error'])
 
         if not self.ok:
             raise TableauSystemExit(f'Error occurred on {self.method} ({error["code"]}: {error["summary"]})')
