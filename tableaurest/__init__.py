@@ -6,7 +6,7 @@ from tableaurest.core import TableauREST
 
 
 __title__ = 'tableaurest'
-__version__ = '0.1.1'
+__version__ = '0.1.0'
 __license__ = 'MIT license'
 __author__ = 'Levi Kanwischer'
 __maintainer__ = 'Levi Kanwischer'
