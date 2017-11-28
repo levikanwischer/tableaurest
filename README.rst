@@ -33,7 +33,7 @@ Print Count of Workbooks Owned by Login User
         >>> USERNAME = 'YOUR_TABLEAU_USERNAME'
         >>> PASSWORD = 'YOUR_TABLEAU_PASSWORD'
         >>>
-        >>> with tableaurest.TableauREST() as rest.api:
+        >>> with tableaurest.TableauREST() as restapi:
         >>>     workbooks = restapi.queryWorkbooksforUser(owner=True)
         >>>
         >>>
