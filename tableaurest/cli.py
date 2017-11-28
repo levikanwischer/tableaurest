@@ -95,6 +95,9 @@ def refreshextracts(server, username, password, **options):
         tasks = restapi.getExtractRefreshTasks()
         tasks = {k: v for k, v in tasks.items() if v['datasource']['id'] == workbooks.keys()[0]}
 
+        if len(tasks.keys()) != 1:
+            raise TableauSystemExit(f'Matched tasks was not 1 (Found == {len(tasks.keys())}')
+
         restapi.runExtractRefreshTaskSync(tasks.keys()[0], sync=options['synchronous'], frequency=15)
 
 
