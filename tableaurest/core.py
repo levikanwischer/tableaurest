@@ -168,7 +168,7 @@ class Response(object):
         """Convert pagination results to SimpleNamespace."""
         paginate = {'pageNumber': 1, 'pageSize': 1, 'totalAvailable': 1}
 
-        if 'pagination' in self.body.keys():
+        if 'pagination' in self.keys:
             pagination = self.body['pagination']
             for item, value in pagination.items():
                 paginate[item] = int(value)
