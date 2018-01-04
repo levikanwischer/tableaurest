@@ -70,7 +70,7 @@ def refreshextracts(server, username, password, **options):
         format='%(asctime)s - %(module)s - %(levelname)s - %(funcName)s - %(message)s'
     )
 
-    requires = ('url', 'workbook', 'datasource', )
+    requires = ('url', 'workbook', 'datasource',)
     if set(options.keys()).isdisjoint(set(requires)):
         raise TableaurestExit(f'At least one of {requires} must be given.')
 

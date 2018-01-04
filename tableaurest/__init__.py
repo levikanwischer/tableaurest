@@ -6,7 +6,6 @@ import logging
 
 from tableaurest.core import TableauREST
 
-
 __title__ = 'tableaurest'
 __version__ = '0.1.0'
 __license__ = 'MIT license'

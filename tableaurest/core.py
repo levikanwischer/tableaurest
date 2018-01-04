@@ -61,8 +61,10 @@ def min_api_version(version):
     [0] https://github.com/tableau/server-client-python
 
     """
+
     def decorator(func):
         """Generic decorator function."""
+
         @functools.wraps(func)
         def wrapper(self, *args, **kwargs):
             """Generic wrapper function."""
@@ -74,7 +76,9 @@ def min_api_version(version):
                 raise TableaurestError(f'Error API Version too low -> {objectname} >= {minversion}')
 
             return func(self, *args, **kwargs)
+
         return wrapper
+
     return decorator
 
 
@@ -124,7 +128,7 @@ class Response(object):
         If `request` response code not as expected.
 
     """
-    _ACCEPTED_GOOD_CODES = (200, 201, 204, )
+    _ACCEPTED_GOOD_CODES = (200, 201, 204,)
 
     def __init__(self, request, method=None):
         self.request = request

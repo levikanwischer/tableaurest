@@ -5,6 +5,7 @@
 import codecs
 import os
 import re
+
 import setuptools
 
 NAME = 'tableaurest'
