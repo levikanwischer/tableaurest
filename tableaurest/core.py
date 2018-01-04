@@ -1,18 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Tableau REST API Interface and misc utilities.
-
-NOTE(LEVI~20171122): This module requires users to be on Python 3.6+ and
-Tableau Server API 2.5+. This is due to the usage of f-strings & 'ordered'
-dictionaries in Python, as well as the use of JSON for the REST API. Outside
-of those items, there really isn't any reason this package couldn't be made
-backwards compatible with other versions of Python or the REST API. However,
-at this time there are no plans to expand the version(s) compatibility.
-
-
-See the README for further details.
-
-"""
+"""Tableau REST API Interface and misc utilities."""
 
 import functools
 import logging
@@ -27,7 +15,7 @@ log = logging.getLogger(__name__)
 
 
 class TableaurestError(Exception):
-    """Base Exception for Tableau REST API process on error."""
+    """Exception for Tableau REST API process on error."""
 
     def __init__(self, msg):
         log.critical(msg)
@@ -44,6 +32,16 @@ class TableaurestExit(SystemExit):
 
 def min_api_version(version):
     """Minimum API Method Version Exception decorator.
+
+    Parameters
+    ----------
+    version : str
+        Min API version for particular Tableau Server method.
+
+    Raises
+    ------
+    TableaurestError
+        If class API version is too low for current method.
 
     Notes
     -----
@@ -92,14 +90,14 @@ class Response(object):
 
     Parameters
     ----------
-    request : requests.Response
+    request : object <requests.Response>
         Response object from REST API request.
     method : str, optional (default=None)
         Method name used for REST API request.
 
     Attributes
     ----------
-    request : requests.Response
+    request : object <requests.Response>
         Response object from REST API request.
     method : str
         Method name used for REST API request.
@@ -188,7 +186,7 @@ class BaseTableauREST(object):
     """Base Tableau REST API Interface.
 
     This object implements only 'Official' REST API methods, but is in
-    no was associated with, or approved by, Tableau the company. The usage
+    no way associated with, or approved by, Tableau the company. The usage
     of the word 'Official' is merely meant to convey a mapping of official
     methods, rather than 'helper' methods or 'unofficial' endpoints.
 
@@ -215,7 +213,7 @@ class BaseTableauREST(object):
         Base url of Tableau Server to connect to.
     baseapi : str
         Base url of Tableau Server plus API version.
-    session : requests.Session
+    session : object <requests.Session>
         Current session object for tableau interacting.
 
     Methods
@@ -386,7 +384,7 @@ class BaseTableauREST(object):
                 siteid = site['id']
                 sites[siteid] = site
 
-        log.debug('Found {len(sites)} sites on `Tableau REST API`')
+        log.debug(f'Found {len(sites)} sites on `Tableau REST API`')
 
         return sites
 
@@ -436,14 +434,10 @@ class BaseTableauREST(object):
         return projects
 
     # -------- Area: Workbooks and Views -------- #
-    # Additional Endpoints: addTagstoView, queryViewsforSite, queryViewImage,
-    # queryViewPreviewImage, getWorkbookRevisions, queryWorkbookPreviewImage,
-    # queryWorkbooksforSite, downloadWorkbookRevision, removeWorkbookRevision,
-    # deleteTagfromView, deleteTagfromWorkbook
-
-    @min_api_version('2.5')
-    def publishWorkbook(self, overwrite=False):
-        raise NotImplementedError
+    # Additional Endpoints: publishWorkbook, addTagstoView, queryViewsforSite,
+    # queryViewImage, queryViewPreviewImage, getWorkbookRevisions,
+    # queryWorkbookPreviewImage, queryWorkbooksforSite, downloadWorkbookRevision,
+    # removeWorkbookRevision, deleteTagfromView, deleteTagfromWorkbook
 
     @min_api_version('2.5')
     def addTagstoWorkbook(self, workbookid, tags):
@@ -458,7 +452,7 @@ class BaseTableauREST(object):
 
         Returns
         -------
-        tags : list
+        anonymous : list
             List of dict tags from Tableau Server.
 
         """
@@ -473,9 +467,7 @@ class BaseTableauREST(object):
         request = self.session.put(url, json=body)
         response = Response(request, func)
 
-        tags = response.body['tags']
-
-        return tags
+        return response.body['tags']
 
     @min_api_version('2.5')
     def queryViewsforWorkbook(self, workbookid, usagestats=True):
@@ -524,7 +516,7 @@ class BaseTableauREST(object):
 
         Returns
         -------
-        workbook : dict
+        anonymous : dict
             Dict of workbook details from Tableau Server.
 
         """
@@ -537,9 +529,7 @@ class BaseTableauREST(object):
         request = self.session.get(url)
         response = Response(request, func)
 
-        workbook = response.body['workbook']
-
-        return workbook
+        return response.body['workbook']
 
     @min_api_version('2.5')
     def queryWorkbookConnections(self, workbookid):
@@ -575,8 +565,46 @@ class BaseTableauREST(object):
         return connections
 
     @min_api_version('2.5')
-    def queryWorkbooksforSite(self):
-        raise NotImplementedError
+    def queryWorkbooksforSite(self, pagesize=1000):
+        """Query Viewable Workbooks on Tableau Server for Site.
+
+        Parameters
+        ----------
+        pagesize : int, optional (default=1000)
+            Number of items to fetch per request.
+
+        Returns
+        -------
+        workbooks : dict
+            Dict of viewable workbooks on server.
+
+        """
+        # noinspection PyProtectedMember
+        func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
+        log.info(f'Querying workbooks for site on `Tableau REST API` (site={self.site})')
+
+        url = f'{self.baseapi}/sites/{self.siteid}/workbooks'
+
+        workbooks = dict()
+
+        done, totalsize, pagenumber = False, 0, 1
+        while not done:
+            paged = f'{url}?pageSize={pagesize}&pageNumber={pagenumber}'
+
+            request = self.session.get(paged)
+            response = Response(request, func)
+
+            pagenumber += 1
+            totalsize += response.pagination.pageSize
+            done = response.pagination.totalAvailable <= totalsize
+
+            for workbook in response.body['workbooks']['workbook']:
+                workbookid = workbook['id']
+                workbooks[workbookid] = workbook
+
+        log.debug(f'Found {len(workbooks)} workbooks on `Tableau REST API` (site={self.site})')
+
+        return workbooks
 
     @min_api_version('2.5')
     def queryWorkbooksforUser(self, owner=True, pagesize=1000):
@@ -622,13 +650,13 @@ class BaseTableauREST(object):
 
         return workbooks
 
-    @min_api_version('2.5')
-    def downloadWorkbook(self):
-        raise NotImplementedError
+    # @min_api_version('2.5')
+    # def downloadWorkbook(self):
+    #     raise NotImplementedError
 
-    @min_api_version('2.5')
-    def updateWorkbook(self):
-        raise NotImplementedError
+    # @min_api_version('2.5')
+    # def updateWorkbook(self):
+    #     raise NotImplementedError
 
     @min_api_version('2.5')
     def updateWorkbookConnection(self, workbookid, connectionid, details):
@@ -644,11 +672,11 @@ class BaseTableauREST(object):
             Connection details to update the server with.
             Form -> serverAddress, serverPort, userName, password, embedPassword
 
-        # NOTE(LEVI~20171122): Does user need help with `details`?
+        # NOTE(LEVI~20180103): Should `details=dict()` be **kwargs instead?
 
         Returns
         -------
-        connection : dict
+        anonymous : dict
             Connection details after updating server.
 
         """
@@ -661,13 +689,11 @@ class BaseTableauREST(object):
         request = self.session.put(url, json=details)
         response = Response(request, func)
 
-        connection = response.body['connection']
+        return response.body['connection']
 
-        return connection
-
-    @min_api_version('2.5')
-    def deleteWorkbook(self):
-        raise NotImplementedError
+    # @min_api_version('2.5')
+    # def deleteWorkbook(self):
+    #     raise NotImplementedError
 
     # -------- Area: Data sources -------- #
     # Additional Endpoints: publishDatasource, addTagstoDatasource,
@@ -675,17 +701,39 @@ class BaseTableauREST(object):
     # downloadDatasourceRevision, updateDatasource, updateDatasourceConnection,
     # deleteDatasource, removeDatasourceRevision
 
-    @min_api_version('2.5')
-    def queryDatasource(self):
-        raise NotImplementedError
+    # @min_api_version('2.5')
+    # def queryDatasource(self):
+    #     raise NotImplementedError
+
+    # @min_api_version('2.5')
+    # def queryDatasources(self):
+    #     raise NotImplementedError
 
     @min_api_version('2.5')
-    def queryDatasources(self):
-        raise NotImplementedError
+    def queryDatasourceConnections(self, datasourceid):
+        """Query Datasource Connection Details on Tableau Server.
 
-    @min_api_version('2.5')
-    def queryDatasourceConnections(self):
-        raise NotImplementedError
+        Parameters
+        ----------
+        datasourceid : str
+            ID of datasource to query connections for.
+
+        Returns
+        -------
+        anonymous : dict
+            Details of connections for datasource..
+
+        """
+        # noinspection PyProtectedMember
+        func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
+        log.info(f'Updating workbook connections on `Tableau REST API` (site={self.site})')
+
+        url = f'{self.baseapi}/sites/{self.siteid}/datasources/{datasourceid}/connections'
+
+        request = self.session.put(url)
+        response = Response(request, func)
+
+        return response.body['connections']
 
     # -------- Area: Users and Groups -------- #
     # -------- Area: Users and Groups -------- #
@@ -721,7 +769,7 @@ class BaseTableauREST(object):
 
         Returns
         -------
-        job : dict
+        anonymous : dict
             Dict of current job details & notes on server.
 
         """
@@ -734,9 +782,7 @@ class BaseTableauREST(object):
         request = self.session.get(url)
         response = Response(request, func)
 
-        job = response.body['job']
-
-        return job
+        return response.body['job']
 
     @min_api_version('2.6')
     def getExtractRefreshTask(self, taskid):
@@ -744,7 +790,7 @@ class BaseTableauREST(object):
 
         Returns
         -------
-        task : dict
+        anonymous : dict
             Dict of viewable extract refresh tasks on server.
 
         # NOTE(LEVI~20171122): Cannot access as non-admin (Why Tableau?)
@@ -759,9 +805,7 @@ class BaseTableauREST(object):
         request = self.session.get(url)
         response = Response(request, func)
 
-        task = response.body['task']['extractRefresh']
-
-        return task
+        return response.body['task']['extractRefresh']
 
     @min_api_version('2.6')
     def getExtractRefreshTasks(self):
@@ -791,9 +835,9 @@ class BaseTableauREST(object):
 
         return tasks
 
-    @min_api_version('2.5')
-    def querySchedules(self):
-        raise NotImplementedError
+    # @min_api_version('2.5')
+    # def querySchedules(self):
+    #     raise NotImplementedError
 
     @min_api_version('2.6')
     def runExtractRefreshTask(self, taskid):
@@ -806,7 +850,7 @@ class BaseTableauREST(object):
 
         Returns
         -------
-        connection : dict
+        anonymous : dict
             Connection details after updating server.
 
         Notes
@@ -835,9 +879,7 @@ class BaseTableauREST(object):
         request = self.session.post(url, json=dict())
         response = Response(request, func)
 
-        job = response.body['job']
-
-        return job
+        return response.body['job']
 
     # -------- Area: Subscriptions -------- #
     # Additional Endpoints: createSubscription, querySubscription,
@@ -861,7 +903,7 @@ class BaseTableauREST(object):
 
         Returns
         -------
-        server : dict
+        anonymous : dict
             Server version(s) information.
 
         """
@@ -874,12 +916,9 @@ class BaseTableauREST(object):
         request = self.session.get(url, json=dict())
         response = Response(request, func)
 
-        server = response.body['serverInfo']
-
-        return server
+        return response.body['serverInfo']
 
 
-# noinspection PyAbstractClass
 class TableauREST(BaseTableauREST):
     """Base Tableau REST API Interface w/ Helper Methods."""
 

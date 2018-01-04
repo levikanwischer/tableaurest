@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""tableaurest.cli
-
-This module contains command line utilities for `tableaurest`.
-
-
-See the README for further details.
-
-"""
+"""General commandline utilities for `tableaurest`."""
 
 import getpass
 import logging
