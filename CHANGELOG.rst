@@ -18,8 +18,9 @@ Removed
 ~~~~~~~
 - N/A
 
-Unreleased_
------------
+
+v0.2.0_
+-------
 
 Added
 ~~~~~
@@ -27,12 +28,29 @@ Added
 
 Changed
 ~~~~~~~
-- Minor repo formatting & error handling cleanup
+- Some light cleanup around formatting, logging, & bug fixes
 
 Removed
 ~~~~~~~
 - N/A
 
 
-.. _Develop: https://github.com/levikanwischer/tableaurest/compare/master...develop
-.. _Unreleased: https://github.com/levikanwischer/tableaurest/compare/v0.1.0...master
+v0.1.0_
+-------
+
+Added
+~~~~~
+- Initial (partial) build-out of package
+
+Changed
+~~~~~~~
+- N/A
+
+Removed
+~~~~~~~
+- N/A
+
+
+.. _Develop: https://github.com/levikanwischer/tableaurest/compare/develop...master
+.. _v0.2.0: https://github.com/levikanwischer/tableaurest/compare/v0.2.0...develop
+.. _v0.1.0: https://github.com/levikanwischer/tableaurest/compare/v0.1.0...v0.2.0
