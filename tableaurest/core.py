@@ -337,8 +337,9 @@ class BaseTableauREST(object):
         credentials = response.body['credentials']
         self.session.headers.update({'x-tableau-auth': credentials['token']})
 
-        self.userid = credentials['site']['id']
-        self.siteid = credentials['user']['id']
+        self.userid = credentials['user']['id']
+        self.siteid = credentials['site']['id']
+        self.site = credentials['site']['contentUrl']
 
         return None
 
