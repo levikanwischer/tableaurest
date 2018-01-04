@@ -17,6 +17,8 @@ import click
 import tableaurest
 from tableaurest.core import TableauSystemExit
 
+LOGLEVELS = {'debug': 10, 'info': 20, 'warning': 30, }
+
 
 @click.group()
 @click.version_option(version=tableaurest.__version__)
@@ -43,6 +45,7 @@ def main():
 @click.option('--workbook', help='Name of workbook to refresh.')
 @click.option('--datasource', help='Name of datasource containing extracts to refresh.')
 @click.option('--synchronous', is_flag=True, help='Flag for awaiting completion of workbook refresh.')
+@click.option('--loglevel', type=click.Choice(list(LOGLEVELS.keys())), default='info')
 def refreshextracts(server, username, password, **options):
     """Run Extract Refreshes on workbook/datasource.
 
@@ -63,7 +66,7 @@ def refreshextracts(server, username, password, **options):
 
     """
     logging.basicConfig(
-        level=logging.DEBUG,
+        level=LOGLEVELS[options['loglevel']],
         format='%(asctime)s - %(module)s - %(levelname)s - %(funcName)s - %(message)s'
     )
 

@@ -2,6 +2,8 @@
 
 """Tableau REST API Interface and misc utilities."""
 
+import logging
+
 from tableaurest.core import TableauREST
 
 
@@ -16,3 +18,5 @@ __all__ = [
     '__version__',
     'TableauREST',
 ]
+
+logging.getLogger(__name__).addHandler(logging.NullHandler())

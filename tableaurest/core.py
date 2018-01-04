@@ -23,10 +23,7 @@ from types import SimpleNamespace
 
 import requests
 
-
-# Suppress excessive logging messages from `requests`
-logging.getLogger('requests').setLevel(logging.CRITICAL)
-logging.getLogger('urllib3').setLevel(logging.CRITICAL)
+log = logging.getLogger(__name__)
 
 
 # TODO(LEVI~20171127): Consider changing this to a base 'Exception'
@@ -34,7 +31,7 @@ class TableauSystemExit(SystemExit):
     """Cleanly exit Tableau REST API process on error."""
 
     def __init__(self, msg):
-        logging.critical(msg)
+        log.critical(msg)
         super().__init__(f'{type(self).__name__}: {msg}')
 
 
@@ -139,7 +136,7 @@ class Response(object):
     def validate_response_json(self):
         """Validate request response is of 'Content-Type' JSON."""
         if not self.request.text:
-            logging.debug(f'Body of request was empty. (method={self.method})')
+            log.debug(f'Body of request was empty. (method={self.method})')
 
         elif 'Content-Type' not in self.request.headers:
             raise TableauSystemExit(f'Content-Type not found in request.headers {self.request.headers}')
@@ -152,7 +149,7 @@ class Response(object):
     def validate_response_good(self):
         """Validate request response is correct/expected."""
         result = 'Succeeded' if self.ok else 'Failed'
-        logging.debug(f'Tableau REST API: {self.method} {result} (statuscode={self.statuscode})')
+        log.debug(f'Tableau REST API: {self.method} {result} (statuscode={self.statuscode})')
 
         error = {'error': '???', 'summary': 'Unknown error occurred.'}
         if 'error' in self.keys:
@@ -269,7 +266,7 @@ class BaseTableauREST(object):
 
         """
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        logging.info(f'Signing into `Tableau REST API` (site={self.site})')
+        log.info(f'Signing into `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/auth/signin'
 
@@ -291,7 +288,7 @@ class BaseTableauREST(object):
     def signOut(self):
         """Sign Out of Tableau Server."""
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        logging.info(f'Signing out of `Tableau REST API` (site={self.site})')
+        log.info(f'Signing out of `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/auth/signout'
 
@@ -312,7 +309,7 @@ class BaseTableauREST(object):
 
         """
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        logging.info(f'Switching sites on `Tableau REST API` (site={contenturl})')
+        log.info(f'Switching sites on `Tableau REST API` (site={contenturl})')
 
         url = f'{self.baseapi}/auth/switchSite'
 
@@ -349,7 +346,7 @@ class BaseTableauREST(object):
 
         """
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        logging.info('Querying sites on `Tableau REST API`')
+        log.info('Querying sites on `Tableau REST API`')
 
         url = f'{self.baseapi}/sites'
 
@@ -370,7 +367,7 @@ class BaseTableauREST(object):
                 siteid = site['id']
                 sites[siteid] = site
 
-        logging.debug('Found {len(sites)} sites on `Tableau REST API`')
+        log.debug('Found {len(sites)} sites on `Tableau REST API`')
 
         return sites
 
@@ -393,7 +390,7 @@ class BaseTableauREST(object):
 
         """
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        logging.info(f'Querying projects on `Tableau REST API` (site={self.site})')
+        log.info(f'Querying projects on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/projects'
 
@@ -414,7 +411,7 @@ class BaseTableauREST(object):
                 projectid = project['id']
                 projects[projectid] = project
 
-        logging.debug(f'Found {len(projects)} projects on `Tableau REST API` (site={self.site})')
+        log.debug(f'Found {len(projects)} projects on `Tableau REST API` (site={self.site})')
 
         return projects
 
@@ -446,7 +443,7 @@ class BaseTableauREST(object):
 
         """
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        logging.info(f'Adding tags to workbook on `Tableau REST API` (workbookid={workbookid})')
+        log.info(f'Adding tags to workbook on `Tableau REST API` (workbookid={workbookid})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/workbooks/{workbookid}/tags'
 
@@ -477,7 +474,7 @@ class BaseTableauREST(object):
 
         """
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        logging.info(f'Querying views for workbook on `Tableau REST API` (workbook={workbookid})')
+        log.info(f'Querying views for workbook on `Tableau REST API` (workbook={workbookid})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/workbooks/{workbookid}/views'
         optional = f'{url}?includeUsageStatistics={str(usagestats).lower()}'
@@ -490,7 +487,7 @@ class BaseTableauREST(object):
             viewid = view['id']
             views[viewid] = view
 
-        logging.debug(f'Found {len(views)} views on `Tableau REST API` (workbook={workbookid})')
+        log.debug(f'Found {len(views)} views on `Tableau REST API` (workbook={workbookid})')
 
         return views
 
@@ -510,7 +507,7 @@ class BaseTableauREST(object):
 
         """
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        logging.info(f'Querying workbook on `Tableau REST API` (site={self.site})')
+        log.info(f'Querying workbook on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/workbooks/{workbookid}'
 
@@ -537,7 +534,7 @@ class BaseTableauREST(object):
 
         """
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        logging.info(f'Querying workbook connections on `Tableau REST API` (site={self.site})')
+        log.info(f'Querying workbook connections on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/workbooks/{workbookid}/connections'
 
@@ -549,7 +546,7 @@ class BaseTableauREST(object):
             connectionid = connection['id']
             connections[connectionid] = connection
 
-        logging.debug(f'Found {len(connections)} connections on `Tableau REST API` (workbook={workbookid})')
+        log.debug(f'Found {len(connections)} connections on `Tableau REST API` (workbook={workbookid})')
 
         return connections
 
@@ -575,7 +572,7 @@ class BaseTableauREST(object):
 
         """
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        logging.info(f'Querying workbooks for user on `Tableau REST API` (site={self.site})')
+        log.info(f'Querying workbooks for user on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/users/{self.userid}/workbooks'
 
@@ -596,7 +593,7 @@ class BaseTableauREST(object):
                 workbookid = workbook['id']
                 workbooks[workbookid] = workbook
 
-        logging.debug(f'Found {len(workbooks)} workbooks on `Tableau REST API` (site={self.site})')
+        log.debug(f'Found {len(workbooks)} workbooks on `Tableau REST API` (site={self.site})')
 
         return workbooks
 
@@ -631,7 +628,7 @@ class BaseTableauREST(object):
 
         """
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        logging.info(f'Updating workbook connections on `Tableau REST API` (site={self.site})')
+        log.info(f'Updating workbook connections on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/workbooks/{workbookid}/connections/{connectionid}'
 
@@ -702,7 +699,7 @@ class BaseTableauREST(object):
 
         """
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        logging.info(f'Querying Job Details on `Tableau REST API` (site={self.site})')
+        log.info(f'Querying Job Details on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/jobs/{jobid}'
 
@@ -726,7 +723,7 @@ class BaseTableauREST(object):
 
         """
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        logging.info(f'Getting Extract Refresh Task on `Tableau REST API` (site={self.site})')
+        log.info(f'Getting Extract Refresh Task on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/tasks/extractRefreshes/{taskid}'
 
@@ -748,7 +745,7 @@ class BaseTableauREST(object):
 
         """
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        logging.info(f'Getting Extract Refresh Tasks on `Tableau REST API` (site={self.site})')
+        log.info(f'Getting Extract Refresh Tasks on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/tasks/extractRefreshes'
 
@@ -760,7 +757,7 @@ class BaseTableauREST(object):
             taskid = task['extractRefresh']['id']
             tasks[taskid] = task['extractRefresh']
 
-        logging.debug(f'Found {len(tasks)} tasks on `Tableau REST API` (site={self.site})')
+        log.debug(f'Found {len(tasks)} tasks on `Tableau REST API` (site={self.site})')
 
         return tasks
 
@@ -800,7 +797,7 @@ class BaseTableauREST(object):
 
         """
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        logging.info(f'Running Refresh Extract Task on `Tableau REST API` (site={self.site})')
+        log.info(f'Running Refresh Extract Task on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/tasks/extractRefreshes/{taskid}/runNow'
 
@@ -838,7 +835,7 @@ class BaseTableauREST(object):
 
         """
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        logging.info(f'Querying Server Information on `Tableau REST API` (site={self.site})')
+        log.info(f'Querying Server Information on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/serverinfo'
 
@@ -899,14 +896,14 @@ class TableauREST(BaseTableauREST):
         workbookid = task['workbook']['id']
         original = self.queryWorkbook(workbookid)
 
-        logging.info(f'Beginning Sync Refresh Extract for {original["contentUrl"]}')
+        log.info(f'Beginning Sync Refresh Extract for {original["contentUrl"]}')
 
         self.runExtractRefreshTask(taskid)
 
         while sync and self.queryWorkbook(workbookid)['updatedAt'] == original['updatedAt']:
-            logging.debug(f'{taskid} for {workbookid} not complete (sleeping={frequency}secs)')
+            log.debug(f'{taskid} for {workbookid} not complete (sleeping={frequency}secs)')
             time.sleep(frequency)
 
-        logging.info(f'Completing Sync Refresh Extract for {original["contentUrl"]}')
+        log.info(f'Completing Sync Refresh Extract for {original["contentUrl"]}')
 
         return None
