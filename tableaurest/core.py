@@ -111,8 +111,6 @@ class Response(object):
         Numeric http(s) response code from request.
     ok : bool
         Flag for if `statuscode` within accepted list.
-    pagination : types.SimpleNamespace
-        SimpleNamespace of key/value pagination pairs.
 
     Methods
     -------
@@ -120,6 +118,8 @@ class Response(object):
         Validate request response is of 'Content-Type' JSON.
     validate_response_good()
         Validate request response is correct/expected.
+    pagination : object <types.SimpleNamespace>
+        SimpleNamespace of key/value pagination pairs.
 
     Raises
     ------
@@ -200,7 +200,7 @@ class BaseTableauREST(object):
         Name of user to log into Tableau Server with.
     password : str
         Password of user to log into Tableau Server with.
-    api : str, optional (default=self._CURRENT_API_VERION)
+    api : str, optional (default=self._MIN_JSON_API_VERSION)
         API version number for Interfacing with Tableau Server.
     site : str, optional (default='')
         Content url of site to connect to Tableau Server with.
@@ -262,7 +262,7 @@ class BaseTableauREST(object):
 
         return None
 
-    ########## Area: Authentication ##########
+    # -------- Area: Authentication -------- #
     # Additional Endpoints: None
 
     @min_api_version('2.5')
@@ -280,6 +280,7 @@ class BaseTableauREST(object):
             Default site is typically an empty string ('').
 
         """
+        # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
         log.info(f'Signing into `Tableau REST API` (site={self.site})')
 
@@ -302,13 +303,14 @@ class BaseTableauREST(object):
     @min_api_version('2.5')
     def signOut(self):
         """Sign Out of Tableau Server."""
+        # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
         log.info(f'Signing out of `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/auth/signout'
 
         request = self.session.post(url)
-        response = Response(request, func)
+        Response(request, func)
 
         return None
 
@@ -323,6 +325,7 @@ class BaseTableauREST(object):
             Default site is typically an empty string ('').
 
         """
+        # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
         log.info(f'Switching sites on `Tableau REST API` (site={contenturl})')
 
@@ -341,7 +344,7 @@ class BaseTableauREST(object):
 
         return None
 
-    ########## Area: Sites ##########
+    # -------- Area: Sites -------- #
     # Additional Endpoints: createSite, querySite, queryViewsforSite,
     # updateSite, deleteSite
 
@@ -360,6 +363,7 @@ class BaseTableauREST(object):
             Dict of sites available to current user.
 
         """
+        # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
         log.info('Querying sites on `Tableau REST API`')
 
@@ -386,7 +390,7 @@ class BaseTableauREST(object):
 
         return sites
 
-    ########## Area: Projects ##########
+    # -------- Area: Projects -------- #
     # Additional Endpoints: createProject, updateProject, deleteProject
 
     @min_api_version('2.5')
@@ -404,6 +408,7 @@ class BaseTableauREST(object):
             Dict of projects available to current user.
 
         """
+        # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
         log.info(f'Querying projects on `Tableau REST API` (site={self.site})')
 
@@ -430,7 +435,7 @@ class BaseTableauREST(object):
 
         return projects
 
-    ########## Area: Workbooks and Views ##########
+    # -------- Area: Workbooks and Views -------- #
     # Additional Endpoints: addTagstoView, queryViewsforSite, queryViewImage,
     # queryViewPreviewImage, getWorkbookRevisions, queryWorkbookPreviewImage,
     # queryWorkbooksforSite, downloadWorkbookRevision, removeWorkbookRevision,
@@ -457,6 +462,7 @@ class BaseTableauREST(object):
             List of dict tags from Tableau Server.
 
         """
+        # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
         log.info(f'Adding tags to workbook on `Tableau REST API` (workbookid={workbookid})')
 
@@ -479,7 +485,7 @@ class BaseTableauREST(object):
         ----------
         workbookid : str
             ID of workbook to query information about.
-        useagestats : bool, optional (default=True)
+        usagestats : bool, optional (default=True)
             Flag for including usage statistics for views.
 
         Returns
@@ -488,6 +494,7 @@ class BaseTableauREST(object):
             Dict of view available to current user for workbook.
 
         """
+        # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
         log.info(f'Querying views for workbook on `Tableau REST API` (workbook={workbookid})')
 
@@ -521,6 +528,7 @@ class BaseTableauREST(object):
             Dict of workbook details from Tableau Server.
 
         """
+        # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
         log.info(f'Querying workbook on `Tableau REST API` (site={self.site})')
 
@@ -548,6 +556,7 @@ class BaseTableauREST(object):
             Dict of workbook connections from Tableau Server.
 
         """
+        # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
         log.info(f'Querying workbook connections on `Tableau REST API` (site={self.site})')
 
@@ -586,6 +595,7 @@ class BaseTableauREST(object):
             Dict of viewable workbooks on server.
 
         """
+        # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
         log.info(f'Querying workbooks for user on `Tableau REST API` (site={self.site})')
 
@@ -642,6 +652,7 @@ class BaseTableauREST(object):
             Connection details after updating server.
 
         """
+        # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
         log.info(f'Updating workbook connections on `Tableau REST API` (site={self.site})')
 
@@ -658,7 +669,7 @@ class BaseTableauREST(object):
     def deleteWorkbook(self):
         raise NotImplementedError
 
-    ########## Area: Data sources ##########
+    # -------- Area: Data sources -------- #
     # Additional Endpoints: publishDatasource, addTagstoDatasource,
     # deleteTagfromDatasource, getDatasourceRevisions, downloadDatasource,
     # downloadDatasourceRevision, updateDatasource, updateDatasourceConnection,
@@ -676,25 +687,26 @@ class BaseTableauREST(object):
     def queryDatasourceConnections(self):
         raise NotImplementedError
 
-    ########## Area: Users and Groups ##########
+    # -------- Area: Users and Groups -------- #
+    # -------- Area: Users and Groups -------- #
     # Additional Endpoints: createGroup, addUsertoGroup, addUsertoSite,
     # getUsersinGroup, getUsersonSite, queryGroups, queryUserOnSite,
     # updateGroup, updateUser, removeUserfromGroup, removeUserfromSite,
     # deleteGroup
 
-    ########## Area: Revisions ##########
+    # -------- Area: Revisions -------- #
     # Additional Endpoints: getDatasourceRevisions, getWorkbookRevisions,
     # downloadDatasourceRevision, downloadWorkbookRevision,
     # removeDatasourceRevision, removeWorkbookRevision
 
-    ########## Area: Permissions ##########
+    # -------- Area: Permissions -------- #
     # Additional Endpoints: addDatasourcePermissions, addProjectPermissions,
     # addDefaultPermissions, addWorkbookPermissions, queryDatasourcePermissions,
     # queryProjectPermissions, queryDefaultPermissions, queryWorkbookPermissions,
     # deleteDatasourcePermission, deleteProjectPermission, deleteDefaultPermission,
     # deleteWorkbookPermission
 
-    ########## Area: Jobs, Tasks, and Schedules ##########
+    # -------- Area: Jobs, Tasks, and Schedules -------- #
     # Additional Endpoints: createSchedule, queryExtractRefreshTasks,
     # updateSchedule, deleteSchedule
 
@@ -713,6 +725,7 @@ class BaseTableauREST(object):
             Dict of current job details & notes on server.
 
         """
+        # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
         log.info(f'Querying Job Details on `Tableau REST API` (site={self.site})')
 
@@ -737,6 +750,7 @@ class BaseTableauREST(object):
         # NOTE(LEVI~20171122): Cannot access as non-admin (Why Tableau?)
 
         """
+        # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
         log.info(f'Getting Extract Refresh Task on `Tableau REST API` (site={self.site})')
 
@@ -759,6 +773,7 @@ class BaseTableauREST(object):
             Dict of viewable extract refresh tasks on server.
 
         """
+        # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
         log.info(f'Getting Extract Refresh Tasks on `Tableau REST API` (site={self.site})')
 
@@ -811,6 +826,7 @@ class BaseTableauREST(object):
         returned cannot currently be queried from the Query Job method.
 
         """
+        # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
         log.info(f'Running Refresh Extract Task on `Tableau REST API` (site={self.site})')
 
@@ -823,20 +839,20 @@ class BaseTableauREST(object):
 
         return job
 
-    ########## Area: Subscriptions ##########
+    # -------- Area: Subscriptions -------- #
     # Additional Endpoints: createSubscription, querySubscription,
     # querySubscriptions, updateSubscription, deleteSubscription
 
-    ########## Area: Favorites ##########
+    # -------- Area: Favorites -------- #
     # Additional Endpoints: addDatasourcetoFavorites, addViewtoFavorites,
     # addWorkbooktoFavorites, deleteDatasourcefromFavorites,
     # deleteViewfromFavorites, deleteWorkbookfromFavorites, getFavoritesforUser
 
-    ########## Area: Publishing ##########
+    # -------- Area: Publishing -------- #
     # Additional Endpoints: initiateFileUpload, appendtoFileUpload,
     # publishDatasource, publishWorkbook, updateSite
 
-    ########## Area: Server ##########
+    # -------- Area: Server -------- #
     # Additional Endpoints: None
 
     @min_api_version('2.5')
@@ -849,6 +865,7 @@ class BaseTableauREST(object):
             Server version(s) information.
 
         """
+        # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
         log.info(f'Querying Server Information on `Tableau REST API` (site={self.site})')
 
@@ -862,6 +879,7 @@ class BaseTableauREST(object):
         return server
 
 
+# noinspection PyAbstractClass
 class TableauREST(BaseTableauREST):
     """Base Tableau REST API Interface w/ Helper Methods."""
 
