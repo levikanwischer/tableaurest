@@ -234,7 +234,7 @@ class BaseTableauREST(object):
         self.userid = None
         self.siteid = None
 
-        self.baseapi = f'{server}/api/{self.api}'
+        self._server = server
 
         self.session = requests.Session()
         self.session.headers.update({'Content-Type': 'application/json'})
@@ -242,6 +242,10 @@ class BaseTableauREST(object):
         self.session.verify = False
 
         self.signIn(username, password, self.site)
+
+    @property
+    def baseapi(self):
+        return f'{self._server}/api/{self.api}'
 
     def __enter__(self):
         """Context manager entrance method."""
