@@ -15,7 +15,7 @@ import logging
 import click
 
 import tableaurest
-from tableaurest.core import TableauSystemExit
+from tableaurest.core import TableaurestExit
 
 LOGLEVELS = {'debug': 10, 'info': 20, 'warning': 30, }
 
@@ -72,7 +72,7 @@ def refreshextracts(server, username, password, **options):
 
     requires = ('url', 'workbook', 'datasource', )
     if set(options.keys()).isdisjoint(set(requires)):
-        raise TableauSystemExit(f'At least one of {requires} must be given.')
+        raise TableaurestExit(f'At least one of {requires} must be given.')
 
     if password is None:
         password = getpass.getpass('Enter Password: ')
@@ -93,13 +93,13 @@ def refreshextracts(server, username, password, **options):
             workbooks = {k: v for k, v in workbooks.items() if v['project']['name'] == options['project']}
 
         if len(workbooks.keys()) != 1:
-            raise TableauSystemExit(f'Matched workbooks was not 1 (Found == {len(workbooks.keys())}')
+            raise TableaurestExit(f'Matched workbooks was not 1 (Found == {len(workbooks.keys())}')
 
         tasks = restapi.getExtractRefreshTasks()
         tasks = {k: v for k, v in tasks.items() if v['datasource']['id'] == workbooks.keys()[0]}
 
         if len(tasks.keys()) != 1:
-            raise TableauSystemExit(f'Matched tasks was not 1 (Found == {len(tasks.keys())}')
+            raise TableaurestExit(f'Matched tasks was not 1 (Found == {len(tasks.keys())}')
 
         restapi.runExtractRefreshTaskSync(tasks.keys()[0], sync=options['synchronous'], frequency=15)
 

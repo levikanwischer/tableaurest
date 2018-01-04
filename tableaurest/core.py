@@ -26,8 +26,15 @@ import requests
 log = logging.getLogger(__name__)
 
 
-# TODO(LEVI~20171127): Consider changing this to a base 'Exception'
-class TableauSystemExit(SystemExit):
+class TableaurestError(Exception):
+    """Base Exception for Tableau REST API process on error."""
+
+    def __init__(self, msg):
+        log.critical(msg)
+        super().__init__(f'{type(self).__name__}: {msg}')
+
+
+class TableaurestExit(SystemExit):
     """Cleanly exit Tableau REST API process on error."""
 
     def __init__(self, msg):
@@ -64,7 +71,7 @@ def min_api_version(version):
 
             if minversion > requestversion:
                 objectname = f'{type(self).__name__}.{func.__name__}'
-                raise TableauSystemExit(f'Error API Version too low -> {objectname} >= {minversion}')
+                raise TableaurestError(f'Error API Version too low -> {objectname} >= {minversion}')
 
             return func(self, *args, **kwargs)
         return wrapper
@@ -112,7 +119,7 @@ class Response(object):
 
     Raises
     ------
-    TableauSystemExit
+    TableaurestError
         If `request` header missing 'Content-Type' or is not JSON.
         If `request` response code not as expected.
 
@@ -139,10 +146,10 @@ class Response(object):
             log.debug(f'Body of request was empty. (method={self.method})')
 
         elif 'Content-Type' not in self.request.headers:
-            raise TableauSystemExit(f'Content-Type not found in request.headers {self.request.headers}')
+            raise TableaurestError(f'Content-Type not found in request.headers {self.request.headers}')
 
         elif not self.request.headers['Content-Type'].lower().startswith('application/json'):
-            raise TableauSystemExit(f'Content-Type is not set to JSON/UTF8 {self.request.headers}')
+            raise TableaurestError(f'Content-Type is not set to JSON/UTF8 {self.request.headers}')
 
         return None
 
@@ -156,7 +163,7 @@ class Response(object):
             error.update(self.body['error'])
 
         if not self.ok:
-            raise TableauSystemExit(f'Error occurred on {self.method} ({error["code"]}: {error["summary"]})')
+            raise TableaurestError(f'Error occurred on {self.method} ({error["code"]}: {error["summary"]})')
 
         return None
 
