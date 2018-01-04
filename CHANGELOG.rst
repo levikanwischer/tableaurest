@@ -19,7 +19,7 @@ Removed
 - N/A
 
 
-v0.2.0_
+v0.2.1_
 -------
 
 Added
@@ -52,5 +52,5 @@ Removed
 
 
 .. _Develop: https://github.com/levikanwischer/tableaurest/compare/develop...master
-.. _v0.2.0: https://github.com/levikanwischer/tableaurest/compare/v0.2.0...develop
-.. _v0.1.0: https://github.com/levikanwischer/tableaurest/compare/v0.1.0...v0.2.0
+.. _v0.2.0: https://github.com/levikanwischer/tableaurest/compare/v0.2.1...develop
+.. _v0.1.0: https://github.com/levikanwischer/tableaurest/compare/v0.1.0...v0.2.1
