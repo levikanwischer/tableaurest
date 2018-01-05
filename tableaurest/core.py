@@ -687,7 +687,7 @@ class BaseTableauREST(object):
 
         url = f'{self.baseapi}/sites/{self.siteid}/workbooks/{workbookid}/connections/{connectionid}'
 
-        request = self.session.put(url, json=details)
+        request = self.session.put(url, json={'connection': details or dict()})
         response = Response(request, func)
 
         return response.body['connection']
