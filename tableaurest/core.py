@@ -135,7 +135,7 @@ class Response(object):
         self.validate_response_json()
 
         self.body = self.request.json() if self.request.text else dict()
-        self.keys = list(self.body.keys())
+        self.keys = list(self.body)
 
         self.statuscode = self.request.status_code
         self.ok = self.statuscode in self._ACCEPTED_GOOD_CODES

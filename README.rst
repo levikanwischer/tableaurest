@@ -36,7 +36,7 @@ Print Count of Workbooks Owned by Login User
         >>> with tableaurest.TableauREST() as restapi:
         >>>     workbooks = restapi.queryWorkbooksforUser(owner=True)
         >>>
-        >>> print(f'{USERNAME} owns {len(workbooks.keys())} workbooks on {SERVER}.')
+        >>> print(f'{USERNAME} owns {len(workbooks)} workbooks on {SERVER}.')
         'Jane owns 12 workbooks on https://tableau.fakecompany.com.'
 
 

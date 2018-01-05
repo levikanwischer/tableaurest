@@ -38,7 +38,7 @@ def main():
 @click.option('--workbook', help='Name of workbook to refresh.')
 @click.option('--datasource', help='Name of datasource containing extracts to refresh.')
 @click.option('--synchronous', is_flag=True, help='Flag for awaiting completion of workbook refresh.')
-@click.option('--loglevel', type=click.Choice(list(LOGLEVELS.keys())), default='info')
+@click.option('--loglevel', type=click.Choice(list(LOGLEVELS)), default='info')
 def refreshextracts(server, username, password, **options):
     """Run Extract Refreshes on workbook/datasource.
 
@@ -64,7 +64,7 @@ def refreshextracts(server, username, password, **options):
     )
 
     requires = ('url', 'workbook', 'datasource',)
-    if set(options.keys()).isdisjoint(set(requires)):
+    if set(options).isdisjoint(set(requires)):
         raise TableaurestExit(f'At least one of {requires} must be given.')
 
     if password is None:
@@ -72,8 +72,8 @@ def refreshextracts(server, username, password, **options):
 
     with tableaurest.TableauREST(server, username, password, **options) as restapi:
 
-        if set(options.keys()) & set(requires[:2]):
-            args = ('contentUrl', 'url') if 'url' in options.keys() else ('name', 'workbook')
+        if set(options) & set(requires[:2]):
+            args = ('contentUrl', 'url') if 'url' in options else ('name', 'workbook')
 
             workbooks = restapi.queryWorkbooksforUser()
             workbooks = {k: v for k, v in workbooks.items() if k[args[0]] == options[args[1]]}
@@ -82,19 +82,19 @@ def refreshextracts(server, username, password, **options):
             datasources = restapi.queryDatasources()
             workbooks = {k: v for k, v in datasources.items() if k['name'] == options['datasource']}
 
-        if 'project' in options.keys():
+        if 'project' in options:
             workbooks = {k: v for k, v in workbooks.items() if v['project']['name'] == options['project']}
 
-        if len(workbooks.keys()) != 1:
-            raise TableaurestExit(f'Matched workbooks was not 1 (Found == {len(workbooks.keys())}')
+        if len(workbooks) != 1:
+            raise TableaurestExit(f'Matched workbooks was not 1 (Found == {len(workbooks)}')
 
         tasks = restapi.getExtractRefreshTasks()
-        tasks = {k: v for k, v in tasks.items() if v['datasource']['id'] == list(workbooks.keys())[0]}
+        tasks = {k: v for k, v in tasks.items() if v['datasource']['id'] == list(workbooks)[0]}
 
-        if len(tasks.keys()) != 1:
-            raise TableaurestExit(f'Matched tasks was not 1 (Found == {len(tasks.keys())}')
+        if len(tasks) != 1:
+            raise TableaurestExit(f'Matched tasks was not 1 (Found == {len(tasks)}')
 
-        restapi.runExtractRefreshTaskSync(list(tasks.keys())[0], sync=options['synchronous'], frequency=15)
+        restapi.runExtractRefreshTaskSync(list(tasks)[0], sync=options['synchronous'], frequency=15)
 
 
 if __name__ == '__main__':

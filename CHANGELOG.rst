@@ -7,6 +7,10 @@ All notable changes to this project will be documented in this file.
 Develop_
 --------
 
+Changed
+~~~~~~~
+- Remove excessive (useless) dict.keys() usage from codebase
+
 
 Unreleased_
 -----------
