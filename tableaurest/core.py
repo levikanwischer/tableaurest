@@ -553,7 +553,7 @@ class BaseTableauREST(object):
 
         url = f'{self.baseapi}/sites/{self.siteid}/workbooks/{workbookid}/connections'
 
-        request = self.session.post(url)
+        request = self.session.get(url)
         response = Response(request, func)
 
         connections = dict()
@@ -731,7 +731,7 @@ class BaseTableauREST(object):
 
         url = f'{self.baseapi}/sites/{self.siteid}/datasources/{datasourceid}/connections'
 
-        request = self.session.put(url)
+        request = self.session.get(url)
         response = Response(request, func)
 
         return response.body['connections']
