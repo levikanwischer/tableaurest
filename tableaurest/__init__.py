@@ -7,7 +7,7 @@ import logging
 from tableaurest.core import TableauREST
 
 __title__ = 'tableaurest'
-__version__ = '0.2.1'
+__version__ = '0.2.2'
 __license__ = 'MIT license'
 __author__ = 'Levi Kanwischer'
 __maintainer__ = 'Levi Kanwischer'
