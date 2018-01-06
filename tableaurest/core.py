@@ -216,13 +216,42 @@ class BaseTableauREST(object):
 
     Methods
     -------
-    signIn(username, password, contenturl)
+    signIn(username, password, contenturl='')
         Sign Into Tableau Server.
     signOut()
         Sign Out of Tableau Server.
     switchSite(contenturl)
         Switch Session Site on Tableau Server.
-    # TODO(LEVI~20171122): Complete me...
+    querySites(pagesize=1000)
+        Query Sites List on Tableau Server.
+    queryProjects(pagesize=1000)
+        Query Site Projects List on Tableau Server.
+    addTagstoWorkbook(workbookid, tags)
+        Add Tags to Workbook on Tableau Server.
+    queryViewsforWorkbook(workbookid, usagestats=True)
+        Query Workbook Views on Tableau Server.
+    queryWorkbook(workbookid)
+        Query Workbook Information on Tableau Server.
+    queryWorkbookConnections(workbookid)
+        Query Workbook Connections on Tableau Server.
+    queryWorkbooksforSite(pagesize=1000)
+        Query Viewable Workbooks on Tableau Server for Site.
+    queryWorkbooksforUser(owner=True, pagesize=1000)
+        Query Viewable Workbooks on Tableau Server for User.
+    updateWorkbookConnection(workbookid, connectionid, details)
+        Update Workbook Connection Details on Tableau Server.
+    queryDatasourceConnections(datasourceid)
+        Query Datasource Connection Details on Tableau Server.
+    queryJob(jobid)
+        Get information about a specific job on Tableau Server,
+    getExtractRefreshTask(taskid)
+        Query Single Refresh Task on Tableau Server.
+    getExtractRefreshTasks()
+        Query Viewable Refresh Tasks on Tableau Server.
+    runExtractRefreshTask(taskid)
+        Run Refresh Extract Tasks on Tableau Server.
+    serverInfo()
+        Fetch server version and information on Tableau Server.
 
     """
     _MIN_JSON_API_VERSION = '2.5'
