@@ -11,14 +11,12 @@ from types import SimpleNamespace
 
 import requests
 
-log = logging.getLogger(__name__)
-
 
 class TableaurestError(Exception):
     """Exception for Tableau REST API process on error."""
 
     def __init__(self, msg):
-        log.critical(msg)
+        logging.critical(msg)
         super().__init__(f'{type(self).__name__}: {msg}')
 
 
@@ -26,7 +24,7 @@ class TableaurestExit(SystemExit):
     """Cleanly exit Tableau REST API process on error."""
 
     def __init__(self, msg):
-        log.critical(msg)
+        logging.critical(msg)
         super().__init__(f'{type(self).__name__}: {msg}')
 
 
@@ -145,7 +143,7 @@ class Response(object):
     def validate_response_json(self):
         """Validate request response is of 'Content-Type' JSON."""
         if not self.request.text:
-            log.debug(f'Body of request was empty. (method={self.method})')
+            logging.debug(f'Body of request was empty. (method={self.method})')
 
         elif 'Content-Type' not in self.request.headers:
             raise TableaurestError(f'Content-Type not found in request.headers {self.request.headers}')
@@ -158,7 +156,7 @@ class Response(object):
     def validate_response_good(self):
         """Validate request response is correct/expected."""
         result = 'Succeeded' if self.ok else 'Failed'
-        log.debug(f'Tableau REST API: {self.method} {result} (statuscode={self.statuscode})')
+        logging.debug(f'Tableau REST API: {self.method} {result} (statuscode={self.statuscode})')
 
         error = {'error': '???', 'summary': 'Unknown error occurred.'}
         if 'error' in self.keys:
@@ -280,7 +278,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        log.info(f'Signing into `Tableau REST API` (site={self.site})')
+        logging.info(f'Signing into `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/auth/signin'
 
@@ -303,7 +301,7 @@ class BaseTableauREST(object):
         """Sign Out of Tableau Server."""
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        log.info(f'Signing out of `Tableau REST API` (site={self.site})')
+        logging.info(f'Signing out of `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/auth/signout'
 
@@ -325,7 +323,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        log.info(f'Switching sites on `Tableau REST API` (site={contenturl})')
+        logging.info(f'Switching sites on `Tableau REST API` (site={contenturl})')
 
         url = f'{self.baseapi}/auth/switchSite'
 
@@ -364,7 +362,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        log.info('Querying sites on `Tableau REST API`')
+        logging.info('Querying sites on `Tableau REST API`')
 
         url = f'{self.baseapi}/sites'
 
@@ -385,7 +383,7 @@ class BaseTableauREST(object):
                 siteid = site['id']
                 sites[siteid] = site
 
-        log.debug(f'Found {len(sites)} sites on `Tableau REST API`')
+        logging.debug(f'Found {len(sites)} sites on `Tableau REST API`')
 
         return sites
 
@@ -409,7 +407,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        log.info(f'Querying projects on `Tableau REST API` (site={self.site})')
+        logging.info(f'Querying projects on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/projects'
 
@@ -430,7 +428,7 @@ class BaseTableauREST(object):
                 projectid = project['id']
                 projects[projectid] = project
 
-        log.debug(f'Found {len(projects)} projects on `Tableau REST API` (site={self.site})')
+        logging.debug(f'Found {len(projects)} projects on `Tableau REST API` (site={self.site})')
 
         return projects
 
@@ -459,7 +457,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        log.info(f'Adding tags to workbook on `Tableau REST API` (workbookid={workbookid})')
+        logging.info(f'Adding tags to workbook on `Tableau REST API` (workbookid={workbookid})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/workbooks/{workbookid}/tags'
 
@@ -489,7 +487,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        log.info(f'Querying views for workbook on `Tableau REST API` (workbook={workbookid})')
+        logging.info(f'Querying views for workbook on `Tableau REST API` (workbook={workbookid})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/workbooks/{workbookid}/views'
         optional = f'{url}?includeUsageStatistics={str(usagestats).lower()}'
@@ -502,7 +500,7 @@ class BaseTableauREST(object):
             viewid = view['id']
             views[viewid] = view
 
-        log.debug(f'Found {len(views)} views on `Tableau REST API` (workbook={workbookid})')
+        logging.debug(f'Found {len(views)} views on `Tableau REST API` (workbook={workbookid})')
 
         return views
 
@@ -523,7 +521,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        log.info(f'Querying workbook on `Tableau REST API` (site={self.site})')
+        logging.info(f'Querying workbook on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/workbooks/{workbookid}'
 
@@ -549,7 +547,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        log.info(f'Querying workbook connections on `Tableau REST API` (site={self.site})')
+        logging.info(f'Querying workbook connections on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/workbooks/{workbookid}/connections'
 
@@ -561,7 +559,7 @@ class BaseTableauREST(object):
             connectionid = connection['id']
             connections[connectionid] = connection
 
-        log.debug(f'Found {len(connections)} connections on `Tableau REST API` (workbook={workbookid})')
+        logging.debug(f'Found {len(connections)} connections on `Tableau REST API` (workbook={workbookid})')
 
         return connections
 
@@ -582,7 +580,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        log.info(f'Querying workbooks for site on `Tableau REST API` (site={self.site})')
+        logging.info(f'Querying workbooks for site on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/workbooks'
 
@@ -603,7 +601,7 @@ class BaseTableauREST(object):
                 workbookid = workbook['id']
                 workbooks[workbookid] = workbook
 
-        log.debug(f'Found {len(workbooks)} workbooks on `Tableau REST API` (site={self.site})')
+        logging.debug(f'Found {len(workbooks)} workbooks on `Tableau REST API` (site={self.site})')
 
         return workbooks
 
@@ -626,7 +624,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        log.info(f'Querying workbooks for user on `Tableau REST API` (site={self.site})')
+        logging.info(f'Querying workbooks for user on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/users/{self.userid}/workbooks'
 
@@ -647,7 +645,7 @@ class BaseTableauREST(object):
                 workbookid = workbook['id']
                 workbooks[workbookid] = workbook
 
-        log.debug(f'Found {len(workbooks)} workbooks on `Tableau REST API` (site={self.site})')
+        logging.debug(f'Found {len(workbooks)} workbooks on `Tableau REST API` (site={self.site})')
 
         return workbooks
 
@@ -683,7 +681,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        log.info(f'Updating workbook connections on `Tableau REST API` (site={self.site})')
+        logging.info(f'Updating workbook connections on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/workbooks/{workbookid}/connections/{connectionid}'
 
@@ -727,7 +725,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        log.info(f'Updating workbook connections on `Tableau REST API` (site={self.site})')
+        logging.info(f'Updating workbook connections on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/datasources/{datasourceid}/connections'
 
@@ -776,7 +774,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        log.info(f'Querying Job Details on `Tableau REST API` (site={self.site})')
+        logging.info(f'Querying Job Details on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/jobs/{jobid}'
 
@@ -799,7 +797,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        log.info(f'Getting Extract Refresh Task on `Tableau REST API` (site={self.site})')
+        logging.info(f'Getting Extract Refresh Task on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/tasks/extractRefreshes/{taskid}'
 
@@ -820,7 +818,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        log.info(f'Getting Extract Refresh Tasks on `Tableau REST API` (site={self.site})')
+        logging.info(f'Getting Extract Refresh Tasks on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/tasks/extractRefreshes'
 
@@ -832,7 +830,7 @@ class BaseTableauREST(object):
             taskid = task['extractRefresh']['id']
             tasks[taskid] = task['extractRefresh']
 
-        log.debug(f'Found {len(tasks)} tasks on `Tableau REST API` (site={self.site})')
+        logging.debug(f'Found {len(tasks)} tasks on `Tableau REST API` (site={self.site})')
 
         return tasks
 
@@ -873,7 +871,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        log.info(f'Running Refresh Extract Task on `Tableau REST API` (site={self.site})')
+        logging.info(f'Running Refresh Extract Task on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/tasks/extractRefreshes/{taskid}/runNow'
 
@@ -910,7 +908,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        log.info(f'Querying Server Information on `Tableau REST API` (site={self.site})')
+        logging.info(f'Querying Server Information on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/serverinfo'
 
@@ -969,14 +967,14 @@ class TableauREST(BaseTableauREST):
         workbookid = task['workbook']['id']
         original = self.queryWorkbook(workbookid)
 
-        log.info(f'Beginning Sync Refresh Extract for {original["contentUrl"]}')
+        logging.info(f'Beginning Sync Refresh Extract for {original["contentUrl"]}')
 
         self.runExtractRefreshTask(taskid)
 
         while sync and self.queryWorkbook(workbookid)['updatedAt'] == original['updatedAt']:
-            log.debug(f'{taskid} for {workbookid} not complete (sleeping={frequency}secs)')
+            logging.debug(f'{taskid} for {workbookid} not complete (sleeping={frequency}secs)')
             time.sleep(frequency)
 
-        log.info(f'Completing Sync Refresh Extract for {original["contentUrl"]}')
+        logging.info(f'Completing Sync Refresh Extract for {original["contentUrl"]}')
 
         return None
