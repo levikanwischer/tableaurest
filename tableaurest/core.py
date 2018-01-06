@@ -241,7 +241,7 @@ class BaseTableauREST(object):
         self.session = requests.Session()
         self.session.headers.update({'Content-Type': 'application/json'})
         self.session.headers.update({'Accept': 'application/json'})
-        self.session.verify = False
+        self.session.verify = kwargs['verify'] if 'verify' in kwargs else True
 
         self.signIn(username, password, self.site)
 
