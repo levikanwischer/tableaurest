@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Tableau REST API Interface and misc utilities."""
+"""Core interface and utilities for `tableaurest`."""
 
 import functools
 import logging
@@ -13,7 +13,7 @@ import requests
 
 
 class TableaurestError(Exception):
-    """Exception for Tableau REST API process on error."""
+    """Base exception class for `tableaurest`."""
 
     def __init__(self, msg):
         logging.critical(msg)
@@ -21,7 +21,7 @@ class TableaurestError(Exception):
 
 
 class TableaurestExit(SystemExit):
-    """Cleanly exit Tableau REST API process on error."""
+    """Base exit class for `tableaurest`."""
 
     def __init__(self, msg):
         logging.critical(msg)
@@ -46,15 +46,13 @@ def min_api_version(version):
     Usage of this method is currently set to '2.5' as a minimum for
     most all endpoints. This is due to the usage of JSON which was
     first introduced then. Methods with a version higher than '2.5'
-    either include breaking changes, or were implemented after after.
+    either include breaking changes, or were implemented after.
 
-    The idea for this decorator came from the TableauServerClient[0]
+    The idea for this decorator came from the TableauServerClient_
     code base. It is/was a completely reimplemented here, but is/was
     heavily influenced by the idea (which was a good idea - thanks).
 
-    Links
-    -----
-    [0] https://github.com/tableau/server-client-python
+    .. _TableauServerClient: https://github.com/tableau/server-client-python
 
     """
 
@@ -198,8 +196,10 @@ class BaseTableauREST(object):
         Password of user to log into Tableau Server with.
     api : str, optional (default=self._MIN_JSON_API_VERSION)
         API version number for Interfacing with Tableau Server.
+        If not given, uses the min JSON API version (2.5).
     site : str, optional (default='')
         Content url of site to connect to Tableau Server with.
+        If not given, used the 'default' tableau site.
 
     Attributes
     ----------
@@ -243,7 +243,7 @@ class BaseTableauREST(object):
     queryDatasourceConnections(datasourceid)
         Query Datasource Connection Details on Tableau Server.
     queryJob(jobid)
-        Get information about a specific job on Tableau Server,
+        Get information about a specific job on Tableau Server.
     getExtractRefreshTask(taskid)
         Query Single Refresh Task on Tableau Server.
     getExtractRefreshTasks()
@@ -284,7 +284,6 @@ class BaseTableauREST(object):
         """Context manager exit method."""
         self.signOut()
         self.session.close()
-
         return None
 
     # -------- Area: Authentication -------- #
@@ -299,10 +298,10 @@ class BaseTableauREST(object):
         username : str
             Name of user to log into Tableau Server with.
         password : str
-            password of user to log into Tableau Server with.
+            Password of user to log into Tableau Server with.
         contenturl : str, optional (default='')
             Content url of site to connect to Tableau Server with.
-            Default site is typically an empty string ('').
+            If not given, used the 'default' tableau site.
 
         """
         # noinspection PyProtectedMember
@@ -349,7 +348,7 @@ class BaseTableauREST(object):
         ----------
         contenturl : str, optional (default='')
             Content url of site to connect to Tableau Server with.
-            Default site is typically an empty string ('').
+            If not given, used the 'default' tableau site.
 
         """
         # noinspection PyProtectedMember
@@ -406,7 +405,7 @@ class BaseTableauREST(object):
             request = self.session.get(paged)
             response = Response(request, func)
 
-            pagenumber += 1  # NOTE(LEVI~20171122): Should this update from response?
+            pagenumber += 1
             totalsize += response.pagination.pageSize
             done = response.pagination.totalAvailable <= totalsize
 
@@ -702,7 +701,7 @@ class BaseTableauREST(object):
             Connection details to update the server with.
             Form -> serverAddress, serverPort, userName, password, embedPassword
 
-        # NOTE(LEVI~20180103): Should `details=dict()` be **kwargs instead?
+        # TODO(LEVI~20180103): Should `details=dict()` be **kwargs instead?
 
         Returns
         -------
@@ -790,7 +789,7 @@ class BaseTableauREST(object):
 
     @min_api_version('2.5')
     def queryJob(self, jobid):
-        """Get information about a specific job on Tableau Server,
+        """Get information about a specific job on Tableau Server.
 
         Parameters
         ----------
@@ -956,7 +955,7 @@ class TableauREST(BaseTableauREST):
         super().__init__(server, username, password, **kwargs)
         self.api = self.serverInfo()['restApiVersion']
 
-    def runExtractRefreshTaskSync(self, taskid, sync=False, frequency=60):
+    def runExtractRefreshTaskSync(self, taskid, sync=False, frequency=15):
         """Helper method to ensure Refresh completions.
 
         This is a 'private' method as it does not directly reflect a
@@ -969,7 +968,7 @@ class TableauREST(BaseTableauREST):
             Id of task to run refresh extract on.
         sync : bool, optional (default=False)
             Flag for awaiting completion of workbook refresh.
-        frequency : int, optional (default=60)
+        frequency : int, optional (default=15)
             How often (seconds) it should check workbook status.
             i.e. How many seconds should it sleep for between checks?
 

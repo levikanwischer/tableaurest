@@ -3,8 +3,7 @@
 
 tableaurest
 ===========
-A Python Based Tableau REST API Interface.
-
+A Python based Tableau REST API interface.
 
 Installation
 ------------
@@ -15,29 +14,24 @@ Installation
         $ python -m pip install tableaurest
 
 
-Issues
-------
-If you encounter any issues, please first search existing 'Issues' on GitHub. If none match your issue, please create a new 'Issue' accordingly to initialize discussion. Thanks.
-
-
 Examples
 ========
 
-Print Count of Workbooks Owned by Login User
+Print count of Workbooks Owned by Login User.
 
     .. code-block:: python
 
-        >>> import tableaurest
+        >>> from tableaurest import TableauREST
         >>>
         >>> SERVER = 'YOUR_TABLEAU_URL'
         >>> USERNAME = 'YOUR_TABLEAU_USERNAME'
         >>> PASSWORD = 'YOUR_TABLEAU_PASSWORD'
         >>>
-        >>> with tableaurest.TableauREST() as restapi:
+        >>> with TableauREST(SERVER, USERNAME, PASSWORD) as restapi:
         >>>     workbooks = restapi.queryWorkbooksforUser(owner=True)
         >>>
         >>> print(f'{USERNAME} owns {len(workbooks)} workbooks on {SERVER}.')
-        'Jane owns 12 workbooks on https://tableau.fakecompany.com.'
+        'YOUR_TABLEAU_USERNAME owns 4 workbooks on YOUR_TABLEAU_URL.'
 
 
 Extras

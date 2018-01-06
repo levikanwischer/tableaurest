@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Tableau REST API Interface and misc utilities."""
+"""Tableau REST API interface with misc utilities."""
 
 import logging
 

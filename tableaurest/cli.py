@@ -17,7 +17,7 @@ LOGLEVELS = {'debug': 10, 'info': 20, 'warning': 30, }
 @click.version_option(version=tableaurest.__version__)
 def main():
     """
-    tableaurest - A Python Based Tableau REST API Interface.
+    tableaurest - A Python based Tableau REST API interface.
 
         USAGE:
         $ tableaurest --help

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""A Python Based Tableau REST API Interface."""
+"""A Python based Tableau REST API interface."""
 
 import codecs
 import os
@@ -97,7 +97,6 @@ setuptools.setup(
     package_data={
         NAME: [
         ],
-
     },
 
     entry_points={

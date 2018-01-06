@@ -10,6 +10,12 @@ Develop_
 Changed
 ~~~~~~~
 - Remove excessive (useless) dict.keys() usage from codebase
+- Allow user to specify ssl verify on TableauREST init (default=True)
+- Remove auth token from session header on signOut
+
+Removed
+~~~~~~~
+- Remove custom logger(s) from submodules
 
 
 Unreleased_
