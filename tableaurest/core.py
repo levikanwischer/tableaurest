@@ -308,6 +308,8 @@ class BaseTableauREST(object):
         request = self.session.post(url)
         Response(request, func)
 
+        del self.session.headers['x-tableau-auth']
+
         return None
 
     @min_api_version('2.6')
