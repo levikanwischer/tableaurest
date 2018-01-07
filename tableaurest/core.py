@@ -632,7 +632,7 @@ class BaseTableauREST(object):
         return None
 
     # -------- Area: Projects -------- #
-    # Additional Endpoints: deleteProject
+    # Additional Endpoints: None
 
     @min_api_version('2.5')
     def createProject(self, **kwargs):
@@ -738,6 +738,27 @@ class BaseTableauREST(object):
         response = Response(request, func)
 
         return response.body['project']
+
+    @min_api_version('2.5')
+    def deleteProject(self, projectid):
+        """Delete Project on Tableau Server.
+
+        Parameters
+        ----------
+        projectid : str
+            ID of project to update on tableau server.
+
+        """
+        # noinspection PyProtectedMember
+        func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
+        logging.info(f'Deleting project on `Tableau REST API` (projectid={projectid})')
+
+        url = f'{self.baseapi}/sites/{self.siteid}/projects/{projectid}'
+
+        request = self.session.delete(url)
+        Response(request, func)
+
+        return None
 
     # -------- Area: Workbooks and Views -------- #
     # Additional Endpoints: publishWorkbook, addTagstoView, queryViewsforSite,
