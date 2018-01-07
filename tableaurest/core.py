@@ -727,7 +727,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        logging.info(f'Update project details on `Tableau REST API` (site={self.site})')
+        logging.info(f'Update project details on `Tableau REST API` (projectid={projectid})')
 
         url = f'{self.baseapi}/sites/{self.siteid}/projects/{projectid}'
 
