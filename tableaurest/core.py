@@ -382,7 +382,7 @@ class BaseTableauREST(object):
         return None
 
     # -------- Area: Sites -------- #
-    # Additional Endpoints: deleteSite
+    # Additional Endpoints: None
 
     @min_api_version('2.5')
     def createSite(self, name, site=None, **kwargs):
@@ -587,6 +587,39 @@ class BaseTableauREST(object):
         response = Response(request, func)
 
         return response.body['site']
+
+    @min_api_version('2.5')
+    def deleteSite(self, **kwargs):
+        """Delete Site on Tableau Server.
+
+        Parameters
+        ----------
+        **kwargs
+            Optional site (name) parameters.
+            Options are (siteid, name, contenturl)
+            If missing, uses current signed in site.
+
+        """
+        # noinspection PyProtectedMember
+        func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
+        logging.info(f'Deleting site on `Tableau REST API`')
+
+        extension = self.site
+        if 'siteid' in kwargs:
+            extension = f'{kwargs["siteid"]}'
+
+        elif 'name' in kwargs:
+            extension = f'{kwargs["name"]}?key=name'
+
+        elif 'contenturl' in kwargs:
+            extension = f'{kwargs["contenturl"]}?key=contentUrl'
+
+        url = f'{self.baseapi}/sites/{extension}'
+
+        request = self.session.delete(url)
+        Response(request, func)
+
+        return None
 
     # -------- Area: Projects -------- #
     # Additional Endpoints: createProject, updateProject, deleteProject
