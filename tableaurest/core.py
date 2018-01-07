@@ -632,7 +632,7 @@ class BaseTableauREST(object):
         return None
 
     # -------- Area: Projects -------- #
-    # Additional Endpoints: updateProject, deleteProject
+    # Additional Endpoints: deleteProject
 
     @min_api_version('2.5')
     def createProject(self, name, description=None, locked=False):
@@ -715,6 +715,38 @@ class BaseTableauREST(object):
         logging.debug(f'Found {len(projects)} projects on `Tableau REST API` (site={self.site})')
 
         return projects
+
+    @min_api_version('2.5')
+    def updateProject(self, projectid, **kwargs):
+        """Update Project Details on Tableau Server.
+
+        Parameters
+        ----------
+        projectid : str
+            ID of project to update on tableau server.
+        **kwargs
+            Optional project parameters to update.
+            Options are (name, description, contentPermissions)
+
+        Returns
+        -------
+        anonymous : dict
+            Dict of newly created project details.
+
+        """
+        # noinspection PyProtectedMember
+        func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
+        logging.info(f'Update project details on `Tableau REST API` (site={self.site})')
+
+        url = f'{self.baseapi}/sites/{self.siteid}/projects/{projectid}'
+
+        _optional = ('name', 'description', 'contentPermissions',)
+        body = {'project': {k: v for k, v in kwargs.items() if k in _optional}}
+
+        request = self.session.put(url, json=body)
+        response = Response(request, func)
+
+        return response.body['project']
 
     # -------- Area: Workbooks and Views -------- #
     # Additional Endpoints: publishWorkbook, addTagstoView, queryViewsforSite,
