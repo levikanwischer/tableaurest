@@ -635,19 +635,15 @@ class BaseTableauREST(object):
     # Additional Endpoints: deleteProject
 
     @min_api_version('2.5')
-    def createProject(self, name, description=None, locked=False):
-        """Create New Projecct on Tableau Server.
+    def createProject(self, **kwargs):
+        """Create New Project on Tableau Server.
 
         Parameters
         ----------
-        name : str
-            User friendly name of project to create.
-        description : str, optional (default=None)
-            Description about project to be created.
-            If None, description is not added.
-        locked : bool, optional (default=False)
-            Flag for locking permissions at project level.
-            If False, permissions managed by content owner.
+        **kwargs
+            Optional project parameters to update.
+            Options are (name, description, contentPermissions).
+            See official documentation for details.
 
         Returns
         -------
@@ -661,13 +657,8 @@ class BaseTableauREST(object):
 
         url = f'{self.baseapi}/sites/{self.siteid}/projects'
 
-        body = {
-            'project': {
-                'name': name,
-                'description': description or '',
-                'contentPermissions': 'LockedToProject' if locked else 'ManagedByOwner',
-            },
-        }
+        _optional = ('name', 'description', 'contentPermissions',)
+        body = {'project': {k: v for k, v in kwargs.items() if k in _optional}}
 
         request = self.session.post(url, json=body)
         response = Response(request, func)
