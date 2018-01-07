@@ -1215,7 +1215,7 @@ class BaseTableauREST(object):
         return response.body['job']
 
     # -------- Area: Subscriptions -------- #
-    # Additional Endpoints: querySubscription, querySubscriptions, updateSubscription, deleteSubscription
+    # Additional Endpoints: querySubscriptions, updateSubscription, deleteSubscription
 
     @min_api_version('2.5')
     def createSubscription(self, **kwargs):
@@ -1261,6 +1261,32 @@ class BaseTableauREST(object):
         body = {'subscription': {k: v for k, v in kwargs if k in _optional}}
 
         request = self.session.post(url, json=body)
+        response = Response(request, func)
+
+        return response.body['subscription']
+
+    @min_api_version('2.5')
+    def querySubscription(self, subscriptionid):
+        """Query subscription details on Tableau Server.
+
+        Parameters
+        ----------
+        subscriptionid : str
+            ID of subscription to check details for.
+
+        Returns
+        -------
+        anonymous : dict
+            Dict of subscription details.
+
+        """
+        # noinspection PyProtectedMember
+        func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
+        logging.info(f'Query subscription details on `Tableau REST API`')
+
+        url = f'{self.baseapi}/sites/{self.site}/subscriptions/{subscriptionid}'
+
+        request = self.session.get(url)
         response = Response(request, func)
 
         return response.body['subscription']
