@@ -4,6 +4,7 @@
 
 import functools
 import logging
+import re
 import sys
 import time
 from distutils.version import StrictVersion
@@ -381,8 +382,49 @@ class BaseTableauREST(object):
         return None
 
     # -------- Area: Sites -------- #
-    # Additional Endpoints: createSite, querySite, queryViewsforSite,
-    # updateSite, deleteSite
+    # Additional Endpoints: querySite, queryViewsforSite, updateSite, deleteSite
+
+    @min_api_version('2.5')
+    def createSite(self, name, site=None, **kwargs):
+        """Create new site on Tableau Server.
+
+        Parameters
+        ----------
+        name : str
+            User friendly name of site to create.
+        site : str, optional (default=None)
+            URL friendly name of site to create.
+            If None, one will be created from `name`.
+        **kwargs
+            Optional site creation parameters.
+            See official documentation for details.
+
+        Returns
+        -------
+        anonymous : dict
+            Dict of newly created site details.
+
+        """
+        # noinspection PyProtectedMember
+        func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
+        logging.info(f'Creating new site on `Tableau REST API`')
+
+        url = f'{self.baseapi}/sites'
+
+        body = {
+            'site': {
+                'name': name,
+                'contentUrl': re.sub('\W', '', name.title()) if site is None else site
+            }
+        }
+
+        _optionals = ('adminMode', 'userQuota', 'storageQuota', 'disableSubscriptions',)
+        body['site'].update({k: v for k, v in kwargs.items() if k in _optionals})
+
+        request = self.session.post(url, json=body)
+        response = Response(request, func)
+
+        return response.body['site']
 
     @min_api_version('2.5')
     def querySites(self, pagesize=1000):
