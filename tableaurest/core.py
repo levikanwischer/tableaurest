@@ -386,7 +386,7 @@ class BaseTableauREST(object):
 
     @min_api_version('2.5')
     def createSite(self, name, site=None, **kwargs):
-        """Create new site on Tableau Server.
+        """Create New Site on Tableau Server.
 
         Parameters
         ----------
@@ -428,7 +428,7 @@ class BaseTableauREST(object):
 
     @min_api_version('2.5')
     def querySite(self, **kwargs):
-        """Query site details on Tableau Server.
+        """Query Site Details on Tableau Server.
 
         Parameters
         ----------
@@ -466,7 +466,7 @@ class BaseTableauREST(object):
 
     @min_api_version('2.5')
     def querySites(self, pagesize=1000):
-        """Query Sites List on Tableau Server.
+        """Query List of Sites on Tableau Server.
 
         Parameters
         ----------
@@ -508,7 +508,7 @@ class BaseTableauREST(object):
 
     @min_api_version('2.5')
     def queryViewsforSite(self, pagesize=1000):
-        """Query Viewable views on Tableau Server for Site.
+        """Query Viewable Views on Tableau Server for Site.
 
         Parameters
         ----------
@@ -553,7 +553,7 @@ class BaseTableauREST(object):
 
     @min_api_version('2.5')
     def queryProjects(self, pagesize=1000):
-        """Query Site Projects List on Tableau Server.
+        """Query List of Site Projects on Tableau Server.
 
         Parameters
         ----------
