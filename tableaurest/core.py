@@ -1215,8 +1215,55 @@ class BaseTableauREST(object):
         return response.body['job']
 
     # -------- Area: Subscriptions -------- #
-    # Additional Endpoints: createSubscription, querySubscription,
-    # querySubscriptions, updateSubscription, deleteSubscription
+    # Additional Endpoints: querySubscription, querySubscriptions, updateSubscription, deleteSubscription
+
+    @min_api_version('2.5')
+    def createSubscription(self, **kwargs):
+        """Create subscription to view/workbook for user on Tableau Server.
+
+        Parameters
+        ----------
+        **kwargs
+            Optional subscription parameters for creation.
+            Options are (subject, content, schedule, user).
+            See official documentation for details.
+
+        Returns
+        -------
+        anonymous : dict
+            Dict of newly created subscription details.
+
+        Notes
+        -----
+        Request body includes nested JSON object. Complete object example below;
+        {
+            'subject': YOUR_SUBSCRIPTION_NAME,
+            'content': {
+                'type': 'Workbook' or 'View',
+                'id': WORKBOOKID or VIEWID,
+            },
+            'schedule': {
+                'id': SCHEDULEID,
+            },
+            'user': {
+                'id': USERID,
+            },
+        }
+
+        """
+        # noinspection PyProtectedMember
+        func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
+        logging.info(f'Creating new subscription for user on `Tableau REST API`')
+
+        url = f'{self.baseapi}/sites/{self.site}/subscriptions'
+
+        _optional = ('subject', 'content', 'schedule', 'user',)
+        body = {'subscription': {k: v for k, v in kwargs if k in _optional}}
+
+        request = self.session.post(url, json=body)
+        response = Response(request, func)
+
+        return response.body['subscription']
 
     # -------- Area: Favorites -------- #
     # Additional Endpoints: addDatasourcetoFavorites, addViewtoFavorites,
