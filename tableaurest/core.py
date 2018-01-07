@@ -632,7 +632,47 @@ class BaseTableauREST(object):
         return None
 
     # -------- Area: Projects -------- #
-    # Additional Endpoints: createProject, updateProject, deleteProject
+    # Additional Endpoints: updateProject, deleteProject
+
+    @min_api_version('2.5')
+    def createProject(self, name, description=None, locked=False):
+        """Create New Projecct on Tableau Server.
+
+        Parameters
+        ----------
+        name : str
+            User friendly name of project to create.
+        description : str, optional (default=None)
+            Description about project to be created.
+            If None, description is not added.
+        locked : bool, optional (default=False)
+            Flag for locking permissions at project level.
+            If False, permissions managed by content owner.
+
+        Returns
+        -------
+        anonymous : dict
+            Dict of newly created project details.
+
+        """
+        # noinspection PyProtectedMember
+        func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
+        logging.info(f'Creating new project on `Tableau REST API` (site={self.site})')
+
+        url = f'{self.baseapi}/sites/{self.siteid}/projects'
+
+        body = {
+            'project': {
+                'name': name,
+                'description': description or '',
+                'contentPermissions': 'LockedToProject' if locked else 'ManagedByOwner',
+            },
+        }
+
+        request = self.session.post(url, json=body)
+        response = Response(request, func)
+
+        return response.body['project']
 
     @min_api_version('2.5')
     def queryProjects(self, pagesize=1000):
