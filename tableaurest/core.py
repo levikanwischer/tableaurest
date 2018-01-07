@@ -223,8 +223,18 @@ class BaseTableauREST(object):
         Sign Out of Tableau Server.
     switchSite(contenturl)
         Switch Session Site on Tableau Server.
+    createSite(name, site=None, **kwargs)
+        Create New Site on Tableau Server.
+    querySite(**kwargs)
+        Query Site Details on Tableau Server.
     querySites(pagesize=1000)
-        Query Sites List on Tableau Server.
+        Query List of Sites on Tableau Server.
+    queryViewsforSite(pagesize=1000)
+        Query Viewable Views on Tableau Server for Site.
+    updateSite(siteid, **kwargs)
+        Update Site Details on Tableau Server.
+    deleteSite(**kwargs)
+        Delete Site on Tableau Server.
     queryProjects(pagesize=1000)
         Query Site Projects List on Tableau Server.
     addTagstoWorkbook(workbookid, tags)
