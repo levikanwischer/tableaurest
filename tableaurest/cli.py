@@ -86,13 +86,13 @@ def refreshextracts(server, username, password, **options):
             workbooks = {k: v for k, v in workbooks.items() if v['project']['name'] == options['project']}
 
         if len(workbooks) != 1:
-            raise TableaurestExit(f'Matched workbooks was not 1 (Found == {len(workbooks)}')
+            raise TableaurestExit(f'Matched workbooks was not 1 (Found == {len(workbooks)})')
 
         tasks = restapi.getExtractRefreshTasks()
         tasks = {k: v for k, v in tasks.items() if v['datasource']['id'] == list(workbooks)[0]}
 
         if len(tasks) != 1:
-            raise TableaurestExit(f'Matched tasks was not 1 (Found == {len(tasks)}')
+            raise TableaurestExit(f'Matched tasks was not 1 (Found == {len(tasks)})')
 
         restapi.runExtractRefreshTaskSync(list(tasks)[0], sync=options['synchronous'], frequency=15)
 
