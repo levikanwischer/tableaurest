@@ -13,6 +13,7 @@ Changed
 - Allow user to specify ssl verify on TableauREST init (default=True)
 - Remove auth token from session header on signOut
 - Update self.site (contenturl) on signIn
+- Add user impersonation to signIn
 
 Removed
 ~~~~~~~

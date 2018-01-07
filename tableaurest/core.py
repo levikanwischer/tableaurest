@@ -290,7 +290,7 @@ class BaseTableauREST(object):
     # Additional Endpoints: None
 
     @min_api_version('2.5')
-    def signIn(self, username, password, contenturl=''):
+    def signIn(self, username, password, contenturl='', impersonate=None):
         """Sign Into Tableau Server.
 
         Parameters
@@ -302,6 +302,9 @@ class BaseTableauREST(object):
         contenturl : str, optional (default='')
             Content url of site to connect to Tableau Server with.
             If not given, used the 'default' tableau site.
+        impersonate : str, optional (default=None)
+            User to impersonate (must be admin).
+            If None, will signin as `username`.
 
         """
         # noinspection PyProtectedMember
@@ -312,6 +315,9 @@ class BaseTableauREST(object):
 
         body = {'credentials': {'name': username, 'password': password}}
         body['credentials']['site'] = {'contentUrl': contenturl}
+
+        if impersonate is not None:
+            body['credentials']['user'] = {'id': impersonate}
 
         request = self.session.post(url, json=body)
         response = Response(request, func)
