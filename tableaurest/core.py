@@ -235,8 +235,14 @@ class BaseTableauREST(object):
         Update Site Details on Tableau Server.
     deleteSite(**kwargs)
         Delete Site on Tableau Server.
+    createProject(**kwargs)
+        Create New Project on Tableau Server.
     queryProjects(pagesize=1000)
-        Query Site Projects List on Tableau Server.
+        Query List of Site Projects on Tableau Server.
+    updateProject(projectid, **kwargs)
+        Update Project Details on Tableau Server.
+    deleteProject(projectid)
+        Delete Project on Tableau Server.
     addTagstoWorkbook(workbookid, tags)
         Add Tags to Workbook on Tableau Server.
     queryViewsforWorkbook(workbookid, usagestats=True)
