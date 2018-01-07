@@ -382,7 +382,7 @@ class BaseTableauREST(object):
         return None
 
     # -------- Area: Sites -------- #
-    # Additional Endpoints: queryViewsforSite, updateSite, deleteSite
+    # Additional Endpoints: updateSite, deleteSite
 
     @min_api_version('2.5')
     def createSite(self, name, site=None, **kwargs):
@@ -505,6 +505,48 @@ class BaseTableauREST(object):
         logging.debug(f'Found {len(sites)} sites on `Tableau REST API`')
 
         return sites
+
+    @min_api_version('2.5')
+    def queryViewsforSite(self, pagesize=1000):
+        """Query Viewable views on Tableau Server for Site.
+
+        Parameters
+        ----------
+        pagesize : int, optional (default=1000)
+            Number of items to fetch per request.
+
+        Returns
+        -------
+        views : dict
+            Dict of viewable views on server.
+
+        """
+        # noinspection PyProtectedMember
+        func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
+        logging.info(f'Querying views for site on `Tableau REST API` (site={self.site})')
+
+        url = f'{self.baseapi}/sites/{self.siteid}/views'
+
+        views = dict()
+
+        done, totalsize, pagenumber = False, 0, 1
+        while not done:
+            paged = f'{url}?includeUsageStatistics=true&pageSize={pagesize}&pageNumber={pagenumber}'
+
+            request = self.session.get(paged)
+            response = Response(request, func)
+
+            pagenumber += 1
+            totalsize += response.pagination.pageSize
+            done = response.pagination.totalAvailable <= totalsize
+
+            for view in response.body['views']['view']:
+                viewid = view['id']
+                views[viewid] = view
+
+        logging.debug(f'Found {len(views)} views on `Tableau REST API` (site={self.site})')
+
+        return views
 
     # -------- Area: Projects -------- #
     # Additional Endpoints: createProject, updateProject, deleteProject
