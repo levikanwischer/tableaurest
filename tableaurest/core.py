@@ -217,11 +217,11 @@ class BaseTableauREST(object):
 
     Methods
     -------
-    signIn(username, password, contenturl='')
+    signIn(username, password, contenturl='', impersonate=None)
         Sign Into Tableau Server.
     signOut()
         Sign Out of Tableau Server.
-    switchSite(contenturl)
+    switchSite(contenturl='')
         Switch Session Site on Tableau Server.
     createSite(name, site=None, **kwargs)
         Create New Site on Tableau Server.
