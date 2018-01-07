@@ -382,7 +382,7 @@ class BaseTableauREST(object):
         return None
 
     # -------- Area: Sites -------- #
-    # Additional Endpoints: updateSite, deleteSite
+    # Additional Endpoints: deleteSite
 
     @min_api_version('2.5')
     def createSite(self, name, site=None, **kwargs):
@@ -547,6 +547,46 @@ class BaseTableauREST(object):
         logging.debug(f'Found {len(views)} views on `Tableau REST API` (site={self.site})')
 
         return views
+
+    @min_api_version('2.5')
+    def updateSite(self, siteid, **kwargs):
+        """Update Site Details on Tableau Server.
+
+        Parameters
+        ----------
+        siteid : str
+            Id of site to update details for.
+        **kwargs
+            Optional site update parameters.
+            See official documentation for details.
+
+        Returns
+        -------
+        anonymous : dict
+            Dict of newly created site details.
+
+        Notes
+        -----
+        This method does not at present support logo updating.
+
+        """
+        # noinspection PyProtectedMember
+        func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
+        logging.info(f'Updating site details on `Tableau REST API`')
+
+        url = f'{self.baseapi}/sites{siteid}'
+
+        _optionals = (
+            'name', 'contentUrl', 'adminMode', 'userQuota', 'state', 'storageQuota',
+            'disableSubscriptions', 'revisionHistoryEnabled', 'revisionLimit',
+        )
+
+        body = {'site': {k: v for k, v in kwargs.items() if k in _optionals}}
+
+        request = self.session.post(url, json=body)
+        response = Response(request, func)
+
+        return response.body['site']
 
     # -------- Area: Projects -------- #
     # Additional Endpoints: createProject, updateProject, deleteProject
