@@ -382,7 +382,7 @@ class BaseTableauREST(object):
         return None
 
     # -------- Area: Sites -------- #
-    # Additional Endpoints: querySite, queryViewsforSite, updateSite, deleteSite
+    # Additional Endpoints: queryViewsforSite, updateSite, deleteSite
 
     @min_api_version('2.5')
     def createSite(self, name, site=None, **kwargs):
@@ -422,6 +422,44 @@ class BaseTableauREST(object):
         body['site'].update({k: v for k, v in kwargs.items() if k in _optionals})
 
         request = self.session.post(url, json=body)
+        response = Response(request, func)
+
+        return response.body['site']
+
+    @min_api_version('2.5')
+    def querySite(self, **kwargs):
+        """Query site details on Tableau Server.
+
+        Parameters
+        ----------
+        **kwargs
+            Optional site (name) parameters.
+            Options are (siteid, name, contenturl)
+            If missing, uses current signed in site.
+
+        Returns
+        -------
+        anonymous : dict
+            Dict of requested site details.
+
+        """
+        # noinspection PyProtectedMember
+        func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
+        logging.info('Querying site on `Tableau REST API`')
+
+        extension = self.site
+        if 'siteid' in kwargs:
+            extension = f'{kwargs["siteid"]}'
+
+        elif 'name' in kwargs:
+            extension = f'{kwargs["name"]}?key=name'
+
+        elif 'contenturl' in kwargs:
+            extension = f'{kwargs["contenturl"]}?key=contentUrl'
+
+        url = f'{self.baseapi}/sites/{extension}'
+
+        request = self.session.get(url)
         response = Response(request, func)
 
         return response.body['site']
