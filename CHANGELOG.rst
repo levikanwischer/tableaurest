@@ -40,27 +40,16 @@ Changed
 - Correct queryWorkbookConnections to use GET method
 - Correct queryDatasourceConnections to use GET method
 - Add 'connection' dict wrapper updateWorkbookConnection details
-
-
-v0.2.2_
--------
-
-Changed
-~~~~~~~
 - Correct userid/siteid updating on switchSite method
-
-
-v0.2.1_
--------
-
-Changed
-~~~~~~~
 - Some light cleanup around formatting, logging, & bug fixes
+
+
+v0.1.0
+------
+- Initial release version
 
 
 .. _Develop: https://github.com/levikanwischer/tableaurest/compare/master...develop
 .. _Unreleased: https://github.com/levikanwischer/tableaurest/compare/v0.3.0...master
 .. _v0.3.0: https://github.com/levikanwischer/tableaurest/compare/v0.2.3...v0.3.0
-.. _v0.2.3: https://github.com/levikanwischer/tableaurest/compare/v0.2.2...v0.2.3
-.. _v0.2.2: https://github.com/levikanwischer/tableaurest/compare/v0.2.1...v0.2.2
-.. _v0.2.1: https://github.com/levikanwischer/tableaurest/compare/v0.2.0...v.0.2.1
+.. _v0.2.3: https://github.com/levikanwischer/tableaurest/compare/v0.1.0...v0.2.3
