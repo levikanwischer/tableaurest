@@ -195,12 +195,17 @@ class BaseTableauREST(object):
         Name of user to log into Tableau Server with.
     password : str
         Password of user to log into Tableau Server with.
-    api : str, optional (default=self._MIN_JSON_API_VERSION)
-        API version number for Interfacing with Tableau Server.
-        If not given, uses the min JSON API version (2.5).
-    site : str, optional (default='')
-        Content url of site to connect to Tableau Server with.
-        If not given, used the 'default' tableau site.
+    **kwargs
+        Additional parameter options of class/initialization.
+        api : str, optional (default=self._MIN_JSON_API_VERSION)
+            API version number for Interfacing with Tableau Server.
+            If not given, uses the min JSON API version (2.5).
+        site : str, optional (default='')
+            Content url of site to connect to Tableau Server with.
+            If not given, used the 'default' tableau site.
+        impersonate : str, optional (default=None)
+            User to impersonate on signin (must be admin).
+            If not given, will signin as `username`.
 
     Attributes
     ----------
@@ -284,13 +289,10 @@ class BaseTableauREST(object):
     _MIN_JSON_API_VERSION = '2.5'
 
     def __init__(self, server, username, password, **kwargs):
-        self.api = kwargs['api'] if 'api' in kwargs else self._MIN_JSON_API_VERSION
+        self._server, self.userid, self.siteid = server, None, None
+
         self.site = kwargs['site'] if 'site' in kwargs else ''
-
-        self.userid = None
-        self.siteid = None
-
-        self._server = server
+        self.api = kwargs['api'] if 'api' in kwargs else self._MIN_JSON_API_VERSION
 
         self.session = requests.Session()
         self.session.headers.update({'Content-Type': 'application/json'})
