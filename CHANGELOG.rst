@@ -7,6 +7,10 @@ All notable changes to this project will be documented in this file.
 Develop_
 --------
 
+Added
+~~~~~
+- All methods added for: Authentication, Sites, Projects, Subscriptions, Server
+
 Changed
 ~~~~~~~
 - Remove excessive (useless) dict.keys() usage from codebase
