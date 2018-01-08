@@ -297,7 +297,8 @@ class BaseTableauREST(object):
         self.session.headers.update({'Accept': 'application/json'})
         self.session.verify = kwargs['verify'] if 'verify' in kwargs else True
 
-        self.signIn(username, password, self.site)
+        impersonate = kwargs['impersonate'] if 'impersonate' in kwargs else None
+        self.signIn(username, password, self.site, impersonate=impersonate)
 
     @property
     def baseapi(self):

@@ -7,6 +7,10 @@ All notable changes to this project will be documented in this file.
 Develop_
 --------
 
+Added
+-----
+- Expose ``impersonate`` param to ``BaseTableauREST`` initialization
+
 
 Unreleased_
 -----------
