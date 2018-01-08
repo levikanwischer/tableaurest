@@ -1219,7 +1219,7 @@ class BaseTableauREST(object):
 
     @min_api_version('2.5')
     def createSubscription(self, **kwargs):
-        """Create subscription to view/workbook for user on Tableau Server.
+        """Create Subscription to Workbook/View for User on Tableau Server.
 
         Parameters
         ----------
@@ -1253,7 +1253,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        logging.info(f'Creating new subscription for user on `Tableau REST API`')
+        logging.info(f'Creating new subscription for user on `Tableau REST API` (site={self.site})')
 
         url = f'{self.baseapi}/sites/{self.site}/subscriptions'
 
@@ -1267,7 +1267,7 @@ class BaseTableauREST(object):
 
     @min_api_version('2.5')
     def querySubscription(self, subscriptionid):
-        """Query subscription details on Tableau Server.
+        """Query Subscription Details on Tableau Server.
 
         Parameters
         ----------
@@ -1282,7 +1282,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        logging.info(f'Query subscription details on `Tableau REST API`')
+        logging.info(f'Querying subscription details on `Tableau REST API`')
 
         url = f'{self.baseapi}/sites/{self.site}/subscriptions/{subscriptionid}'
 
@@ -1308,7 +1308,7 @@ class BaseTableauREST(object):
         """
         # noinspection PyProtectedMember
         func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
-        logging.info(f'Querying list of subscriptions details on `Tableau REST API`')
+        logging.info(f'Querying list of subscriptions on `Tableau REST API`')
 
         url = f'{self.baseapi}/sites/{self.site}/subscriptions'
 
@@ -1335,7 +1335,7 @@ class BaseTableauREST(object):
 
     @min_api_version('2.5')
     def updateSubscription(self, subscriptionid, **kwargs):
-        """Update subscription to view/workbook for user on Tableau Server.
+        """Update Subscription to Workbook/View for User on Tableau Server.
 
         Parameters
         ----------
