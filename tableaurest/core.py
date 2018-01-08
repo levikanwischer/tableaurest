@@ -267,6 +267,16 @@ class BaseTableauREST(object):
         Query Viewable Refresh Tasks on Tableau Server.
     runExtractRefreshTask(taskid)
         Run Refresh Extract Tasks on Tableau Server.
+    createSubscription(**kwargs)
+        Create Subscription to Workbook/View for User on Tableau Server.
+    querySubscription(subscriptionid)
+        Query Subscription Details on Tableau Server.
+    querySubscriptions(pagesize=1000)
+        Query List of Subscriptions on Tableau Server.
+    updateSubscription(subscriptionid, **kwargs)
+        Update Subscription to Workbook/View for User on Tableau Server.
+    deleteSubscription(subscriptionid)
+        Delete subscription on Tableau Server.
     serverInfo()
         Fetch server version and information on Tableau Server.
 
