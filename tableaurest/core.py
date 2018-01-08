@@ -278,7 +278,7 @@ class BaseTableauREST(object):
     deleteSubscription(subscriptionid)
         Delete subscription on Tableau Server.
     serverInfo()
-        Fetch server version and information on Tableau Server.
+        Fetch Server Information on Tableau Server.
 
     """
     _MIN_JSON_API_VERSION = '2.5'
@@ -1421,7 +1421,7 @@ class BaseTableauREST(object):
 
     @min_api_version('2.5')
     def serverInfo(self):
-        """Fetch server version and information on Tableau Server.
+        """Fetch Server Information on Tableau Server.
 
         Returns
         -------
