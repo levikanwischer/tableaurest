@@ -7,6 +7,14 @@ All notable changes to this project will be documented in this file.
 Develop_
 --------
 
+
+Unreleased_
+-----------
+
+
+v0.3.0_
+-------
+
 Added
 ~~~~~
 - All methods added for: Authentication, Sites, Projects, Subscriptions, Server
@@ -22,10 +30,6 @@ Changed
 Removed
 ~~~~~~~
 - Remove custom logger(s) from submodules
-
-
-Unreleased_
------------
 
 
 v0.2.3_
@@ -55,7 +59,8 @@ Changed
 
 
 .. _Develop: https://github.com/levikanwischer/tableaurest/compare/master...develop
-.. _Unreleased: https://github.com/levikanwischer/tableaurest/compare/v0.2.3...master
+.. _Unreleased: https://github.com/levikanwischer/tableaurest/compare/v0.3.0...master
+.. _v0.3.0: https://github.com/levikanwischer/tableaurest/compare/v0.2.3...v0.3.0
 .. _v0.2.3: https://github.com/levikanwischer/tableaurest/compare/v0.2.2...v0.2.3
 .. _v0.2.2: https://github.com/levikanwischer/tableaurest/compare/v0.2.1...v0.2.2
 .. _v0.2.1: https://github.com/levikanwischer/tableaurest/compare/v0.2.0...v.0.2.1
