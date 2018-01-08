@@ -1215,7 +1215,7 @@ class BaseTableauREST(object):
         return response.body['job']
 
     # -------- Area: Subscriptions -------- #
-    # Additional Endpoints: deleteSubscription
+    # Additional Endpoints: None
 
     @min_api_version('2.5')
     def createSubscription(self, **kwargs):
@@ -1375,6 +1375,27 @@ class BaseTableauREST(object):
         response = Response(request, func)
 
         return response.body['subscription']
+
+    @min_api_version('2.5')
+    def deleteSubscription(self, subscriptionid):
+        """Delete subscription on Tableau Server.
+
+        Parameters
+        ----------
+        subscriptionid : str
+            ID of subscription to be updated.
+
+        """
+        # noinspection PyProtectedMember
+        func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
+        logging.info(f'Deleting subscription on `Tableau REST API` (site={self.site})')
+
+        url = f'{self.baseapi}/sites/{self.site}/subscriptions/{subscriptionid}'
+
+        request = self.session.delete(url)
+        Response(request, func)
+
+        return None
 
     # -------- Area: Favorites -------- #
     # Additional Endpoints: addDatasourcetoFavorites, addViewtoFavorites,
