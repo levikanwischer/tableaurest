@@ -1215,7 +1215,7 @@ class BaseTableauREST(object):
         return response.body['job']
 
     # -------- Area: Subscriptions -------- #
-    # Additional Endpoints: querySubscriptions, updateSubscription, deleteSubscription
+    # Additional Endpoints: updateSubscription, deleteSubscription
 
     @min_api_version('2.5')
     def createSubscription(self, **kwargs):
@@ -1290,6 +1290,48 @@ class BaseTableauREST(object):
         response = Response(request, func)
 
         return response.body['subscription']
+
+    @min_api_version('2.5')
+    def querySubscriptions(self, pagesize=1000):
+        """Query List of Subscriptions on Tableau Server.
+
+        Parameters
+        ----------
+        pagesize : int, optional (default=1000)
+            Number of items to fetch per request.
+
+        Returns
+        -------
+        anonymous : dict
+            Dict of list of subscriptions details.
+
+        """
+        # noinspection PyProtectedMember
+        func = sys._getframe().f_code.co_name  # pylint: disable=protected-access
+        logging.info(f'Querying list of subscriptions details on `Tableau REST API`')
+
+        url = f'{self.baseapi}/sites/{self.site}/subscriptions'
+
+        subscriptions = dict()
+
+        done, totalsize, pagenumber = False, 0, 1
+        while not done:
+            paged = f'{url}?pageSize={pagesize}&pageNumber={pagenumber}'
+
+            request = self.session.get(paged)
+            response = Response(request, func)
+
+            pagenumber += 1
+            totalsize += response.pagination.pageSize
+            done = response.pagination.totalAvailable <= totalsize
+
+            for subscription in response.body['sites']['site']:
+                subscriptionid = subscription['id']
+                subscriptions[subscriptionid] = subscription
+
+        logging.debug(f'Found {len(subscriptions)} subscriptions on `Tableau REST API`')
+
+        return subscriptions
 
     # -------- Area: Favorites -------- #
     # Additional Endpoints: addDatasourcetoFavorites, addViewtoFavorites,
