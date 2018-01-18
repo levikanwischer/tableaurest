@@ -527,9 +527,11 @@ class BaseTableauREST(object):
             totalsize += response.pagination.pageSize
             done = response.pagination.totalAvailable <= totalsize
 
-            for site in response.body['sites']['site']:
-                siteid = site['id']
-                sites[siteid] = site
+            if 'site' in response.body['sites']:
+
+                for site in response.body['sites']['site']:
+                    siteid = site['id']
+                    sites[siteid] = site
 
         logging.debug(f'Found {len(sites)} sites on `Tableau REST API`')
 
@@ -569,9 +571,11 @@ class BaseTableauREST(object):
             totalsize += response.pagination.pageSize
             done = response.pagination.totalAvailable <= totalsize
 
-            for view in response.body['views']['view']:
-                viewid = view['id']
-                views[viewid] = view
+            if 'view' in response.body['views']:
+
+                for view in response.body['views']['view']:
+                    viewid = view['id']
+                    views[viewid] = view
 
         logging.debug(f'Found {len(views)} views on `Tableau REST API` (site={self.site})')
 
@@ -718,9 +722,11 @@ class BaseTableauREST(object):
             totalsize += response.pagination.pageSize
             done = response.pagination.totalAvailable <= totalsize
 
-            for project in response.body['projects']['project']:
-                projectid = project['id']
-                projects[projectid] = project
+            if 'project' in response.body['projects']:
+
+                for project in response.body['projects']['project']:
+                    projectid = project['id']
+                    projects[projectid] = project
 
         logging.debug(f'Found {len(projects)} projects on `Tableau REST API` (site={self.site})')
 
@@ -843,9 +849,12 @@ class BaseTableauREST(object):
         response = Response(request, func)
 
         views = dict()
-        for view in response.body['views']['view']:
-            viewid = view['id']
-            views[viewid] = view
+
+        if 'view' in response.body['views']:
+
+            for view in response.body['views']['view']:
+                viewid = view['id']
+                views[viewid] = view
 
         logging.debug(f'Found {len(views)} views on `Tableau REST API` (workbookid={workbookid})')
 
@@ -902,9 +911,12 @@ class BaseTableauREST(object):
         response = Response(request, func)
 
         connections = dict()
-        for connection in response.body['connections']['connection']:
-            connectionid = connection['id']
-            connections[connectionid] = connection
+
+        if 'connection' in response.body['connections']:
+
+            for connection in response.body['connections']['connection']:
+                connectionid = connection['id']
+                connections[connectionid] = connection
 
         logging.debug(f'Found {len(connections)} connections on `Tableau REST API` (workbookid={workbookid})')
 
@@ -944,9 +956,11 @@ class BaseTableauREST(object):
             totalsize += response.pagination.pageSize
             done = response.pagination.totalAvailable <= totalsize
 
-            for workbook in response.body['workbooks']['workbook']:
-                workbookid = workbook['id']
-                workbooks[workbookid] = workbook
+            if 'workbook' in response.body['workbooks']:
+
+                for workbook in response.body['workbooks']['workbook']:
+                    workbookid = workbook['id']
+                    workbooks[workbookid] = workbook
 
         logging.debug(f'Found {len(workbooks)} workbooks on `Tableau REST API` (site={self.site})')
 
@@ -988,9 +1002,11 @@ class BaseTableauREST(object):
             totalsize += response.pagination.pageSize
             done = response.pagination.totalAvailable <= totalsize
 
-            for workbook in response.body['workbooks']['workbook']:
-                workbookid = workbook['id']
-                workbooks[workbookid] = workbook
+            if 'workbook' in response.body['workbooks']:
+
+                for workbook in response.body['workbooks']['workbook']:
+                    workbookid = workbook['id']
+                    workbooks[workbookid] = workbook
 
         logging.debug(f'Found {len(workbooks)} workbooks on `Tableau REST API` (site={self.site})')
 
@@ -1173,9 +1189,12 @@ class BaseTableauREST(object):
         response = Response(request, func)
 
         tasks = dict()
-        for task in response.body['tasks']['task']:
-            taskid = task['extractRefresh']['id']
-            tasks[taskid] = task['extractRefresh']
+
+        if 'task' in response.body['tasks']:
+
+            for task in response.body['tasks']['task']:
+                taskid = task['extractRefresh']['id']
+                tasks[taskid] = task['extractRefresh']
 
         logging.debug(f'Found {len(tasks)} tasks on `Tableau REST API` (site={self.site})')
 
@@ -1338,9 +1357,11 @@ class BaseTableauREST(object):
             totalsize += response.pagination.pageSize
             done = response.pagination.totalAvailable <= totalsize
 
-            for subscription in response.body['sites']['site']:
-                subscriptionid = subscription['id']
-                subscriptions[subscriptionid] = subscription
+            if 'site' in response.body['sites']:
+
+                for subscription in response.body['sites']['site']:
+                    subscriptionid = subscription['id']
+                    subscriptions[subscriptionid] = subscription
 
         logging.debug(f'Found {len(subscriptions)} subscriptions on `Tableau REST API`')
 
