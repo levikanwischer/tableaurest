@@ -8,8 +8,13 @@ Develop_
 --------
 
 Added
------
+~~~~~
 - Expose ``impersonate`` param to ``BaseTableauREST`` initialization
+- Add existence check to looped response object handling
+
+Changed
+~~~~~~~
+- Correct querySubscriptions response object names
 
 
 Unreleased_
