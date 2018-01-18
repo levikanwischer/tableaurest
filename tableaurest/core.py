@@ -1357,9 +1357,9 @@ class BaseTableauREST(object):
             totalsize += response.pagination.pageSize
             done = response.pagination.totalAvailable <= totalsize
 
-            if 'site' in response.body['sites']:
+            if 'subscription' in response.body['subscriptions']:
 
-                for subscription in response.body['sites']['site']:
+                for subscription in response.body['subscriptions']['subscription']:
                     subscriptionid = subscription['id']
                     subscriptions[subscriptionid] = subscription
 
